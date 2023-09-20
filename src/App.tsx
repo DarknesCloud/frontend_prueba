@@ -1,11 +1,5 @@
 import './App.css';
-import {
-  ClientCrud,
-  InvoiceGenerator,
-  Login,
-  ProductCrud,
-  Register,
-} from './pages';
+import { ClientCrud, Factura, Login, ProductCrud, Register } from './pages';
 import { BrowserRouter, Route, Routes } from 'react-router-dom'; // Importa los componentes de React Router
 
 function App() {
@@ -21,7 +15,7 @@ function App() {
             <Route path="/register" element={<Register />} />{' '}
             <Route path="/products" element={<ProductCrud />} />
             <Route path="/clients" element={<ClientCrud />} />
-            <Route path="/invoice" element={<InvoiceGenerator />} />
+            <Route path="/invoice" element={<Factura />} />
           </Routes>
         </BrowserRouter>
       </main>
