@@ -55,8 +55,11 @@ const Factura = () => {
 
   // Estados para la lista de clientes y ventas
   const [clientList, setClientList] = useState<Client[]>([]);
-  const [sales, setSales] = useState<Sale[]>([]);
   const [productList, setProductList] = useState<Product[]>([]);
+  const [sales, setSales] = useState<Sale[]>([]);
+
+  // Estado para mantener un contador de facturas
+  const [invoiceCounter, setInvoiceCounter] = useState<number>(1);
 
   // Cargar la lista de clientes, productos y ventas desde el LocalStorage al cargar el componente
   useEffect(() => {
@@ -78,37 +81,60 @@ const Factura = () => {
 
   // Evento para el botón de registrar cliente
   const handleRegisterClientClick = () => {
-    // Validar que se haya seleccionado un cliente y se haya registrado al menos un producto
-    if (!selectedClient || cantidad === 0 || precio === 0) {
+    // Validar que se haya seleccionado un cliente
+    if (!selectedClient) {
+      setErrorMensaje('Por favor, seleccione un cliente.');
+      return;
+    }
+
+    // Validar que se haya seleccionado un producto
+    if (!selectedProduct) {
+      setErrorMensaje('Por favor, seleccione un producto.');
+      return;
+    }
+
+    // Encontrar el producto seleccionado
+    const product = productList.find((p) => p.name === selectedProduct);
+
+    // Validar que la cantidad y el precio sean mayores que cero
+    if (cantidad <= 0 || precio <= 0) {
       setErrorMensaje(
-        'Por favor, seleccione un cliente, registre al menos un producto y asegúrese de que la cantidad y el precio sean mayores que cero.'
+        'Asegúrese de que la cantidad y el precio sean mayores que cero.'
       );
       return;
     }
 
-    // Crear un objeto Sale con los datos del formulario
-    const product = productList.find((p) => p.name === selectedProduct);
-    if (!product) {
+    // Validar que la cantidad no sea mayor que el stock disponible
+    if (product) {
+      const updatedStock = product.stock - cantidad;
+      const updatedProducts = productList.map((p) =>
+        p.code === product.code ? { ...p, stock: updatedStock } : p
+      );
+      setProductList(updatedProducts);
+      localStorage.setItem('products', JSON.stringify(updatedProducts));
+    } else {
       setErrorMensaje('Producto no encontrado en el catálogo.');
       return;
     }
 
-    const clientData: Sale = {
+    // Crear un objeto Sale con los datos del formulario
+    const subtotalVenta = precio * cantidad;
+    const isv = subtotalVenta * 0.15;
+    const totalVenta = subtotalVenta + isv;
+
+    const venta: Sale = {
       name: selectedClient,
       tipoFactura,
       codigoProducto: product.code,
       precio,
       cantidad,
-      subtotal,
-      total,
-      productName: product.name, // Agregar el nombre del producto
+      subtotal: subtotalVenta,
+      total: totalVenta,
+      productName: product.name,
     };
 
     // Agregar la nueva venta a la lista de ventas
-    setSales([...sales, clientData]);
-
-    // Guardar las ventas actualizadas en el LocalStorage
-    localStorage.setItem('sales', JSON.stringify([...sales, clientData]));
+    setSales([...sales, venta]);
 
     // Limpiar el formulario
     setSelectedClient('');
@@ -119,6 +145,7 @@ const Factura = () => {
     setCantidad(0);
     setSubtotal(0);
     setTotal(0);
+    setErrorMensaje(null);
   };
 
   // Evento para calcular el subtotal, ISV y total
@@ -158,12 +185,23 @@ const Factura = () => {
         );
       } else {
         setErrorCantidad(null);
-        setCantidad(newCantidad); // Actualizar la cantidad si la validación es exitosa
+
+        // Actualizar el estado de cantidad con el nuevo valor ingresado
+        setCantidad(newCantidad);
+
+        // Calcular el subtotal y el total con la nueva cantidad
+        const newSubtotal = newCantidad * precio;
+        const isv = newSubtotal * 0.15;
+        const newTotal = newSubtotal + isv;
+        setSubtotal(newSubtotal);
+        setTotal(newTotal);
       }
     } else {
       setErrorCantidad('La cantidad no puede ser menor que 0');
     }
   };
+
+  // ...
 
   // Evento para el botón de "Pagar Factura" con los nuevos requerimientos
   const handlePagarFacturaClick = () => {
@@ -191,7 +229,7 @@ const Factura = () => {
         }
 
         // Restar la cantidad vendida al stock del producto
-        const updatedStock = product.stock - venta.cantidad;
+        const updatedStock = product.stock - cantidad;
         return { ...product, stock: updatedStock };
       }
       return product;
@@ -201,51 +239,56 @@ const Factura = () => {
       return;
     }
 
+    // Actualizar la lista de productos en el LocalStorage con los nuevos valores de stock
+    localStorage.setItem('products', JSON.stringify(updatedProducts));
+
     // Calcular el subtotal, ISV y total de la factura
-    const facturaSubtotal = sales[0].subtotal;
+    const facturaSubtotal = sales[0].subtotal * cantidad;
     const isv = facturaSubtotal * 0.15;
     const facturaTotal = facturaSubtotal + isv;
 
-    // Crear la factura con los encabezados y detalles
-    const productName = productList.find(
-      (product) => product.code === sales[0].codigoProducto
-    )?.name;
+    // Crear una factura independiente para cada venta
+    sales.forEach((venta, index) => {
+      const productName = productList.find(
+        (product) => product.code === venta.codigoProducto
+      )?.name;
 
-    const factura = `
-      --- Factura ---
-      Cliente: ${selectedClient}
-      Tipo de Factura: ${tipoFactura}
+      const factura = `
+      --- Factura ${invoiceCounter + index} ---
+      Cliente: ${venta.name}
+      Tipo de Factura: ${venta.tipoFactura}
       
       --- Detalles ---
-      Producto: ${sales[0].codigoProducto} - ${productName}
-      Cantidad: ${sales[0].cantidad}
-      Precio: ${sales[0].precio.toFixed(2)}
-      Subtotal: ${facturaSubtotal.toFixed(2)}
+      Producto: ${venta.codigoProducto} - ${productName}
+      Cantidad: ${cantidad}
+      Precio: ${venta.precio.toFixed(2)}
+      Subtotal: ${facturaSubtotal}
       
-      Subtotal: ${facturaSubtotal.toFixed(2)}
+      Subtotal: ${facturaSubtotal}
       ISV (15%): ${isv.toFixed(2)}
       Total: ${facturaTotal.toFixed(2)}
     `;
 
-    const doc = new jsPDF();
+      const doc = new jsPDF();
 
-    // Agregar el contenido de la factura al PDF
-    doc.text(factura, 10, 10);
+      // Agregar el contenido de la factura al PDF
+      doc.text(factura, 10, 10);
 
-    // Guardar el PDF en una variable de tipo Blob
-    const pdfBlob = doc.output('blob');
+      // Guardar el PDF en una variable de tipo Blob
+      const pdfBlob = doc.output('blob');
 
-    // Crear una URL para el Blob (el PDF)
-    const pdfUrl = URL.createObjectURL(pdfBlob);
+      // Crear una URL para el Blob (el PDF)
+      const pdfUrl = URL.createObjectURL(pdfBlob);
 
-    // Abrir el PDF en una nueva ventana o pestaña
-    window.open(pdfUrl);
+      // Abrir el PDF en una nueva ventana o pestaña
+      window.open(pdfUrl);
+
+      // Actualizar el contador de facturas
+      setInvoiceCounter((prevCounter) => prevCounter + 1);
+    });
 
     // Limpiar la lista de ventas
     setSales([]);
-
-    // Actualizar la lista de productos con el stock actualizado
-    setProductList(updatedProducts);
 
     // Limpiar el formulario y errores
     setSelectedClient('');
@@ -258,6 +301,8 @@ const Factura = () => {
     setTotal(0);
     setErrorMensaje(null);
   };
+
+  // ...
 
   return (
     <div>
