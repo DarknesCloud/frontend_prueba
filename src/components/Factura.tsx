@@ -1,3 +1,4 @@
+import jsPDF from 'jspdf';
 import { useState, useEffect } from 'react';
 
 // Define una interfaz para el cliente
@@ -23,6 +24,7 @@ interface Sale {
   cantidad: number; // Cantidad de productos
   subtotal: number; // Subtotal
   total: number; // Total
+  productName: string;
 }
 
 // Obtener la lista de clientes desde el LocalStorage
@@ -46,6 +48,7 @@ const Factura = () => {
   const [cantidad, setCantidad] = useState<number>(0);
   const [subtotal, setSubtotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
+  const [errorMensaje, setErrorMensaje] = useState<any>(null);
 
   // Estado para controlar la cantidad y el mensaje de error
   const [errorCantidad, setErrorCantidad] = useState<string | null>(null);
@@ -75,15 +78,30 @@ const Factura = () => {
 
   // Evento para el botón de registrar cliente
   const handleRegisterClientClick = () => {
+    // Validar que se haya seleccionado un cliente y se haya registrado al menos un producto
+    if (!selectedClient || cantidad === 0 || precio === 0) {
+      setErrorMensaje(
+        'Por favor, seleccione un cliente, registre al menos un producto y asegúrese de que la cantidad y el precio sean mayores que cero.'
+      );
+      return;
+    }
+
     // Crear un objeto Sale con los datos del formulario
+    const product = productList.find((p) => p.name === selectedProduct);
+    if (!product) {
+      setErrorMensaje('Producto no encontrado en el catálogo.');
+      return;
+    }
+
     const clientData: Sale = {
       name: selectedClient,
       tipoFactura,
-      codigoProducto,
+      codigoProducto: product.code,
       precio,
       cantidad,
       subtotal,
       total,
+      productName: product.name, // Agregar el nombre del producto
     };
 
     // Agregar la nueva venta a la lista de ventas
@@ -145,6 +163,100 @@ const Factura = () => {
     } else {
       setErrorCantidad('La cantidad no puede ser menor que 0');
     }
+  };
+
+  // Evento para el botón de "Pagar Factura" con los nuevos requerimientos
+  const handlePagarFacturaClick = () => {
+    // Validar que se haya seleccionado un cliente y se haya registrado al menos un producto
+    if (!selectedClient || sales.length === 0) {
+      setErrorMensaje(
+        'Por favor, seleccione un cliente y registre al menos un producto.'
+      );
+      return;
+    }
+
+    // Validar que haya suficientes existencias para los productos vendidos
+    let existenciasSuficientes = true;
+    const updatedProducts = productList.map((product) => {
+      const venta = sales.find((item) => item.codigoProducto === product.code);
+
+      if (venta) {
+        if (venta.cantidad > product.stock) {
+          // Mostrar un mensaje de error si no hay suficientes existencias
+          setErrorMensaje(
+            `No hay suficientes existencias para el producto ${product.code}. Existencia actual: ${product.stock}`
+          );
+          existenciasSuficientes = false;
+          return product;
+        }
+
+        // Restar la cantidad vendida al stock del producto
+        const updatedStock = product.stock - venta.cantidad;
+        return { ...product, stock: updatedStock };
+      }
+      return product;
+    });
+
+    if (!existenciasSuficientes) {
+      return;
+    }
+
+    // Calcular el subtotal, ISV y total de la factura
+    const facturaSubtotal = sales[0].subtotal;
+    const isv = facturaSubtotal * 0.15;
+    const facturaTotal = facturaSubtotal + isv;
+
+    // Crear la factura con los encabezados y detalles
+    const productName = productList.find(
+      (product) => product.code === sales[0].codigoProducto
+    )?.name;
+
+    const factura = `
+      --- Factura ---
+      Cliente: ${selectedClient}
+      Tipo de Factura: ${tipoFactura}
+      
+      --- Detalles ---
+      Producto: ${sales[0].codigoProducto} - ${productName}
+      Cantidad: ${sales[0].cantidad}
+      Precio: ${sales[0].precio.toFixed(2)}
+      Subtotal: ${facturaSubtotal.toFixed(2)}
+      
+      Subtotal: ${facturaSubtotal.toFixed(2)}
+      ISV (15%): ${isv.toFixed(2)}
+      Total: ${facturaTotal.toFixed(2)}
+    `;
+
+    const doc = new jsPDF();
+
+    // Agregar el contenido de la factura al PDF
+    doc.text(factura, 10, 10);
+
+    // Guardar el PDF en una variable de tipo Blob
+    const pdfBlob = doc.output('blob');
+
+    // Crear una URL para el Blob (el PDF)
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+
+    // Abrir el PDF en una nueva ventana o pestaña
+    window.open(pdfUrl);
+
+    // Limpiar la lista de ventas
+    setSales([]);
+
+    // Actualizar la lista de productos con el stock actualizado
+    setProductList(updatedProducts);
+
+    // Limpiar el formulario y errores
+    setSelectedClient('');
+    setTipoFactura('');
+    setSelectedProduct('');
+    setCodigoProducto('');
+    setPrecio(0);
+    setCantidad(0);
+    setSubtotal(0);
+    setTotal(0);
+    setErrorMensaje(null);
   };
 
   return (
@@ -245,7 +357,9 @@ const Factura = () => {
           Registrar Cliente
         </button>
         {/* Botón para limpiar el formulario */}
-        <button type="button">Limpiar</button>
+        <button type="button" onClick={handlePagarFacturaClick}>
+          Generar Factura
+        </button>
       </form>
     </div>
   );
