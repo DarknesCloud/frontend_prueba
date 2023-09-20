@@ -1,5 +1,12 @@
 import './App.css';
-import { ClientCrud, Factura, Login, ProductCrud, Register } from './pages';
+import {
+  ClientCrud,
+  Dashboard,
+  Factura,
+  Login,
+  ProductCrud,
+  Register,
+} from './pages';
 import { BrowserRouter, Route, Routes } from 'react-router-dom'; // Importa los componentes de React Router
 
 function App() {
@@ -16,6 +23,7 @@ function App() {
             <Route path="/products" element={<ProductCrud />} />
             <Route path="/clients" element={<ClientCrud />} />
             <Route path="/invoice" element={<Factura />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </BrowserRouter>
       </main>

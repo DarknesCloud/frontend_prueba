@@ -4,3 +4,4 @@ export { default as Register } from '../components/Register';
 export { default as ProductCrud } from '../components/ProductCrud';
 export { default as ClientCrud } from '../components/ClientCrud';
 export { default as Factura } from '../components/Factura';
+export { default as Dashboard } from '../components/Dashboard';
