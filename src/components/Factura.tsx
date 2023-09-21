@@ -49,6 +49,7 @@ const Factura = () => {
   const [subtotal, setSubtotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [errorMensaje, setErrorMensaje] = useState<any>(null);
+  const [currentSales, setCurrentSales] = useState<Sale[]>([]);
 
   // Estado para controlar la cantidad y el mensaje de error
   const [errorCantidad, setErrorCantidad] = useState<string | null>(null);
@@ -242,53 +243,66 @@ const Factura = () => {
     // Actualizar la lista de productos en el LocalStorage con los nuevos valores de stock
     localStorage.setItem('products', JSON.stringify(updatedProducts));
 
+    // Crear un objeto Sale con los datos del formulario
+    const subtotalVenta = precio * cantidad;
+    const isv = subtotalVenta * 0.15;
+    const totalVenta = subtotalVenta + isv;
+
+    const nuevaVenta: Sale = {
+      name: selectedClient,
+      tipoFactura,
+      codigoProducto: codigoProducto, // Usar el código del producto seleccionado
+      precio,
+      cantidad,
+      subtotal: subtotalVenta,
+      total: totalVenta,
+      productName: selectedProduct, // Usar el nombre del producto seleccionado
+    };
+
+    // Agregar la nueva venta a la lista de ventas
+    const nuevasVentas = [...sales, nuevaVenta];
+    setSales(nuevasVentas);
+
+    // Actualizar 'sales' en el LocalStorage
+    localStorage.setItem('sales', JSON.stringify(nuevasVentas));
+
     // Calcular el subtotal, ISV y total de la factura
-    const facturaSubtotal = sales[0].subtotal * cantidad;
-    const isv = facturaSubtotal * 0.15;
-    const facturaTotal = facturaSubtotal + isv;
+    const facturaSubtotal = nuevaVenta.subtotal;
+    const facturaISV = isv;
+    const facturaTotal = nuevaVenta.total;
 
-    // Crear una factura independiente para cada venta
-    sales.forEach((venta, index) => {
-      const productName = productList.find(
-        (product) => product.code === venta.codigoProducto
-      )?.name;
-
-      const factura = `
-      --- Factura ${invoiceCounter + index} ---
-      Cliente: ${venta.name}
-      Tipo de Factura: ${venta.tipoFactura}
-      
+    // Crear el contenido de la factura
+    const facturaContent = `
+      --- Factura ${invoiceCounter} ---
+      Cliente: ${selectedClient}
+      Tipo de Factura: ${tipoFactura}
+  
       --- Detalles ---
-      Producto: ${venta.codigoProducto} - ${productName}
+      Producto: ${codigoProducto} - ${selectedProduct}
       Cantidad: ${cantidad}
-      Precio: ${venta.precio.toFixed(2)}
-      Subtotal: ${facturaSubtotal}
-      
-      Subtotal: ${facturaSubtotal}
-      ISV (15%): ${isv.toFixed(2)}
+      Precio: ${precio.toFixed(2)}
+      Subtotal: ${facturaSubtotal.toFixed(2)}
+  
+      Subtotal: ${facturaSubtotal.toFixed(2)}
+      ISV (15%): ${facturaISV.toFixed(2)}
       Total: ${facturaTotal.toFixed(2)}
     `;
 
-      const doc = new jsPDF();
+    // Crear el PDF de la factura
+    const doc = new jsPDF();
+    doc.text(facturaContent, 10, 10);
 
-      // Agregar el contenido de la factura al PDF
-      doc.text(factura, 10, 10);
+    // Guardar el PDF en una variable de tipo Blob
+    const pdfBlob = doc.output('blob');
 
-      // Guardar el PDF en una variable de tipo Blob
-      const pdfBlob = doc.output('blob');
+    // Crear una URL para el Blob (el PDF)
+    const pdfUrl = URL.createObjectURL(pdfBlob);
 
-      // Crear una URL para el Blob (el PDF)
-      const pdfUrl = URL.createObjectURL(pdfBlob);
+    // Abrir el PDF en una nueva ventana o pestaña
+    window.open(pdfUrl);
 
-      // Abrir el PDF en una nueva ventana o pestaña
-      window.open(pdfUrl);
-
-      // Actualizar el contador de facturas
-      setInvoiceCounter((prevCounter) => prevCounter + 1);
-    });
-
-    // Limpiar la lista de ventas
-    setSales([]);
+    // Actualizar el contador de facturas
+    setInvoiceCounter((prevCounter) => prevCounter + 1);
 
     // Limpiar el formulario y errores
     setSelectedClient('');
