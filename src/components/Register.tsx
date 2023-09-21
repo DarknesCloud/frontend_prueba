@@ -1,10 +1,20 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  Paper,
+} from '@mui/material';
 
 const Register: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const navigate = useNavigate();
 
   const handleRegister = () => {
     // Verificamos que los campos no estén vacíos
@@ -24,13 +34,16 @@ const Register: React.FC = () => {
     // Generamos un token aleatorio para el usuario
     const token = generateRandomToken();
 
-    // Creamos un nuevo usuario con el token y lo almacenamos en el LocalStorage
-    const newUser = { name, email, password, token };
+    // Establecemos el valor predeterminado del campo 'role' en 2 si no se proporciona
+    const userRole = 2;
+
+    // Creamos un nuevo usuario con el token y el campo 'role'
+    const newUser = { name, email, password, token, role: userRole };
     users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
     alert('Registro exitoso');
+    navigate('/dashboard');
   };
-
   // Genera un token aleatorio
   const generateRandomToken = () => {
     return (
@@ -40,55 +53,71 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="container">
-      <h2>Registro</h2>
-      <form>
-        <div className="mb-3">
-          <label htmlFor="name" className="form-label">
-            Nombre
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="name"
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+      }}
+    >
+      <Paper
+        elevation={3}
+        style={{
+          padding: '20px',
+          borderRadius: '10px',
+          boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <Container maxWidth="sm">
+          <Typography variant="h4" align="center">
+            Registro
+          </Typography>
+          <TextField
+            label="Nombre"
+            variant="outlined"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            fullWidth
+            margin="normal"
           />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">
-            Email
-          </label>
-          <input
+          <TextField
+            label="Email"
+            variant="outlined"
             type="email"
-            className="form-control"
-            id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            fullWidth
+            margin="normal"
           />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            Contraseña
-          </label>
-          <input
+          <TextField
+            label="Contraseña"
+            variant="outlined"
             type="password"
-            className="form-control"
-            id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            fullWidth
+            margin="normal"
           />
-        </div>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={handleRegister}
-        >
-          Registrarse
-        </button>
-      </form>
-      <Link to="/">Volver</Link>{' '}
-      {/* Agrega un enlace a la página de registro */}
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleRegister}
+            fullWidth
+            style={{ marginTop: '20px' }}
+          >
+            Registrarse
+          </Button>
+          <Link
+            to="/"
+            style={{ display: 'block', marginTop: '20px', textAlign: 'center' }}
+          >
+            <Button color="primary" fullWidth style={{ marginTop: '20px' }}>
+              Volver
+            </Button>
+          </Link>
+        </Container>
+      </Paper>
     </div>
   );
 };
