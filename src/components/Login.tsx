@@ -24,10 +24,19 @@ const Login: React.FC = () => {
       if (user.token) {
         // Inicio de sesión exitoso
         alert('Inicio de sesión exitoso');
+
         // Guardar el token de sesión en el LocalStorage
         localStorage.setItem('token', user.token);
-        // Redirigir al usuario a la vista de ProductCrud
-        return <Navigate to="/products" />;
+
+        // Guardar el rol del usuario en el LocalStorage
+        localStorage.setItem('userRole', user.role);
+
+        // Redirigir al usuario según su rol
+        if (user.role === 'admin') {
+          return <Navigate to="/admin-dashboard" />;
+        } else {
+          return <Navigate to="/dashboard" />;
+        }
       } else {
         alert('Usuario no autorizado');
       }

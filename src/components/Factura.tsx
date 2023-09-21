@@ -49,7 +49,7 @@ const Factura = () => {
   const [subtotal, setSubtotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [errorMensaje, setErrorMensaje] = useState<any>(null);
-  const [currentSales, setCurrentSales] = useState<Sale[]>([]);
+  const [facturaGenerada, setFacturaGenerada] = useState(false);
 
   // Estado para controlar la cantidad y el mensaje de error
   const [errorCantidad, setErrorCantidad] = useState<string | null>(null);
@@ -61,6 +61,9 @@ const Factura = () => {
 
   // Estado para mantener un contador de facturas
   const [invoiceCounter, setInvoiceCounter] = useState<number>(1);
+
+  // Estados para mantener las ventas generadas
+  const [generatedSales, setGeneratedSales] = useState<Sale[]>([]);
 
   // Cargar la lista de clientes, productos y ventas desde el LocalStorage al cargar el componente
   useEffect(() => {
@@ -243,6 +246,12 @@ const Factura = () => {
     // Actualizar la lista de productos en el LocalStorage con los nuevos valores de stock
     localStorage.setItem('products', JSON.stringify(updatedProducts));
 
+    // Agregar la venta actual a la lista de ventas generadas
+    setGeneratedSales([...generatedSales, ...sales]);
+
+    // Limpiar el estado de ventas actuales
+    setSales([]);
+
     // Crear un objeto Sale con los datos del formulario
     const subtotalVenta = precio * cantidad;
     const isv = subtotalVenta * 0.15;
@@ -303,6 +312,8 @@ const Factura = () => {
 
     // Actualizar el contador de facturas
     setInvoiceCounter((prevCounter) => prevCounter + 1);
+
+    setFacturaGenerada(true);
 
     // Limpiar el formulario y errores
     setSelectedClient('');
@@ -416,7 +427,11 @@ const Factura = () => {
           Registrar Cliente
         </button>
         {/* Botón para limpiar el formulario */}
-        <button type="button" onClick={handlePagarFacturaClick}>
+        <button
+          type="button"
+          onClick={handlePagarFacturaClick}
+          disabled={facturaGenerada}
+        >
           Generar Factura
         </button>
       </form>

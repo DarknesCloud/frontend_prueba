@@ -7,7 +7,8 @@ import {
   ProductCrud,
   Register,
 } from './pages';
-import { BrowserRouter, Route, Routes } from 'react-router-dom'; // Importa los componentes de React Router
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import PrivateRoute from './PrivateRoute'; // Importa el componente PrivateRoute
 
 function App() {
   return (
@@ -18,12 +19,12 @@ function App() {
       <main>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Login />} />{' '}
-            <Route path="/register" element={<Register />} />{' '}
-            <Route path="/products" element={<ProductCrud />} />
-            <Route path="/clients" element={<ClientCrud />} />
-            <Route path="/invoice" element={<Factura />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <PrivateRoute path="/products" element={<ProductCrud />} />
+            <PrivateRoute path="/clients" element={<ClientCrud />} />
+            <PrivateRoute path="/invoice" element={<Factura />} />
+            <PrivateRoute path="/dashboard" element={<Dashboard />} />
           </Routes>
         </BrowserRouter>
       </main>
