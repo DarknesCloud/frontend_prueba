@@ -1,9 +1,24 @@
-import React, { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Verificar si existe una sesión en el SessionStorage al cargar el componente
+    const userSession = JSON.parse(
+      sessionStorage.getItem('userSession') || '{}'
+    );
+    if (userSession.token) {
+      // Si hay una sesión válida, redirigir al dashboard u otra página deseada
+      // Aquí puedes usar u otra página según tus necesidades
+      <Navigate to="/dashboard" />;
+      // return <Navigate to="/dashboard" />;
+    }
+  }, []); // El array vacío [] asegura que este efecto se ejecute solo una vez al cargar el componente
 
   const handleLogin = () => {
     // Verificamos que los campos no estén vacíos
@@ -25,18 +40,13 @@ const Login: React.FC = () => {
         // Inicio de sesión exitoso
         alert('Inicio de sesión exitoso');
 
-        // Guardar el token de sesión en el LocalStorage
-        localStorage.setItem('token', user.token);
+        // Guardar la sesión en SessionStorage
+        sessionStorage.setItem('userSession', JSON.stringify(user));
 
-        // Guardar el rol del usuario en el LocalStorage
-        localStorage.setItem('userRole', user.role);
-
-        // Redirigir al usuario según su rol
-        if (user.role === 'admin') {
-          return <Navigate to="/admin-dashboard" />;
-        } else {
-          return <Navigate to="/dashboard" />;
-        }
+        // Redirigir al dashboard u otra página después del inicio de sesión
+        // Aquí puedes usar u otra página según tus necesidades
+        navigate('/dashboard');
+        // return <Navigate to="/dashboard" />;
       } else {
         alert('Usuario no autorizado');
       }
@@ -76,7 +86,7 @@ const Login: React.FC = () => {
         <button type="button" className="btn btn-primary" onClick={handleLogin}>
           Iniciar Sesión
         </button>
-        <Link to="/register">Registrarse</Link>{' '}
+        <Link to="/register">Registrarse</Link>
       </form>
     </div>
   );

@@ -61,9 +61,19 @@ const Dashboard: React.FC<DashboardProps> = () => {
     }
   }, []);
 
+  const handleLogout = () => {
+    // Eliminar la sesión del SessionStorage
+    sessionStorage.removeItem('userSession');
+
+    // Redirigir al inicio de sesión después de cerrar la sesión
+    window.location.href = '/'; // Puedes usar Navigate para redirigir de manera programática si lo prefieres
+  };
+
   return (
     <div>
       <canvas ref={chartRef}></canvas>
+
+      <button onClick={handleLogout}>Cerrar Sesión</button>
     </div>
   );
 };

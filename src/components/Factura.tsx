@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import { useState, useEffect } from 'react';
+import Guard from './Guard';
 
 // Define una interfaz para el cliente
 interface Client {
@@ -330,112 +331,114 @@ const Factura = () => {
   // ...
 
   return (
-    <div>
-      <h2>Generar Factura</h2>
-      <form>
-        {/* Campo de selección de cliente */}
-        <div className="mb-3">
-          <label htmlFor="client">Cliente:</label>
-          <select
-            id="client"
-            className="form-select"
-            value={selectedClient}
-            onChange={(e) => setSelectedClient(e.target.value)}
+    <Guard>
+      <div>
+        <h2>Generar Factura</h2>
+        <form>
+          {/* Campo de selección de cliente */}
+          <div className="mb-3">
+            <label htmlFor="client">Cliente:</label>
+            <select
+              id="client"
+              className="form-select"
+              value={selectedClient}
+              onChange={(e) => setSelectedClient(e.target.value)}
+            >
+              <option value="">Seleccionar cliente</option>
+              {clientList.map((client) => (
+                <option key={client.name} value={client.name}>
+                  {client.name}
+                </option>
+              ))}
+              <option>Consumidor final</option>
+            </select>
+          </div>
+          {/* Campo para el tipo de factura (Crédito / Contado) */}
+          <div className="mb-3">
+            <label htmlFor="invoice-type">Tipo de Factura:</label>
+            <select
+              id="invoice-type"
+              className="form-select"
+              value={tipoFactura}
+              onChange={(e) => setTipoFactura(e.target.value)}
+            >
+              <option value="">Seleccionar tipo</option>
+              <option value="Credito">Crédito</option>
+              <option value="Contado">Contado</option>
+            </select>
+          </div>
+          {/* Campo para el producto */}
+          <div className="mb-3">
+            <label htmlFor="product">Producto:</label>
+            <input
+              type="text"
+              id="product"
+              value={selectedProduct}
+              onChange={(e) => setSelectedProduct(e.target.value)}
+              onBlur={(e) => handleProductSelect(e.target.value)}
+            />
+          </div>
+          {/* Campo para el código de producto */}
+          <div className="mb-3">
+            <label htmlFor="product-code">Código de Producto:</label>
+            <input
+              type="text"
+              id="product-code"
+              value={codigoProducto}
+              onChange={(e) => setCodigoProducto(e.target.value)}
+            />
+          </div>
+          {/* Campo para el precio */}
+          <div className="mb-3">
+            <label htmlFor="price">Precio:</label>
+            <input
+              type="number"
+              id="price"
+              value={precio}
+              onChange={(e) => setPrecio(Number(e.target.value))}
+            />
+          </div>
+          {/* Campo para la cantidad */}
+          {errorCantidad && <p className="text-danger">{errorCantidad}</p>}
+          <div className="mb-3">
+            <label htmlFor="quantity">Cantidad:</label>
+            <input
+              type="number"
+              id="quantity"
+              value={cantidad}
+              onChange={(e) => handleCantidadChange(Number(e.target.value))}
+            />
+          </div>
+          {/* Campo para el subtotal */}
+          <div className="mb-3">
+            <label htmlFor="subtotal">Subtotal:</label>
+            <input
+              type="text"
+              id="subtotal"
+              value={subtotal.toFixed(2)}
+              readOnly
+            />
+          </div>
+          {/* Campo para el total */}
+          <div className="mb-3">
+            <label htmlFor="total">Total:</label>
+            <input type="text" id="total" value={total.toFixed(2)} readOnly />
+          </div>
+          {/* Botón para registrar un nuevo cliente */}
+          <button type="button" onClick={handleRegisterClientClick}>
+            Registrar Cliente
+          </button>
+          {/* Botón para limpiar el formulario */}
+          <button
+            type="button"
+            onClick={handlePagarFacturaClick}
+            disabled={facturaGenerada}
           >
-            <option value="">Seleccionar cliente</option>
-            {clientList.map((client) => (
-              <option key={client.name} value={client.name}>
-                {client.name}
-              </option>
-            ))}
-            <option>Consumidor final</option>
-          </select>
-        </div>
-        {/* Campo para el tipo de factura (Crédito / Contado) */}
-        <div className="mb-3">
-          <label htmlFor="invoice-type">Tipo de Factura:</label>
-          <select
-            id="invoice-type"
-            className="form-select"
-            value={tipoFactura}
-            onChange={(e) => setTipoFactura(e.target.value)}
-          >
-            <option value="">Seleccionar tipo</option>
-            <option value="Credito">Crédito</option>
-            <option value="Contado">Contado</option>
-          </select>
-        </div>
-        {/* Campo para el producto */}
-        <div className="mb-3">
-          <label htmlFor="product">Producto:</label>
-          <input
-            type="text"
-            id="product"
-            value={selectedProduct}
-            onChange={(e) => setSelectedProduct(e.target.value)}
-            onBlur={(e) => handleProductSelect(e.target.value)}
-          />
-        </div>
-        {/* Campo para el código de producto */}
-        <div className="mb-3">
-          <label htmlFor="product-code">Código de Producto:</label>
-          <input
-            type="text"
-            id="product-code"
-            value={codigoProducto}
-            onChange={(e) => setCodigoProducto(e.target.value)}
-          />
-        </div>
-        {/* Campo para el precio */}
-        <div className="mb-3">
-          <label htmlFor="price">Precio:</label>
-          <input
-            type="number"
-            id="price"
-            value={precio}
-            onChange={(e) => setPrecio(Number(e.target.value))}
-          />
-        </div>
-        {/* Campo para la cantidad */}
-        {errorCantidad && <p className="text-danger">{errorCantidad}</p>}
-        <div className="mb-3">
-          <label htmlFor="quantity">Cantidad:</label>
-          <input
-            type="number"
-            id="quantity"
-            value={cantidad}
-            onChange={(e) => handleCantidadChange(Number(e.target.value))}
-          />
-        </div>
-        {/* Campo para el subtotal */}
-        <div className="mb-3">
-          <label htmlFor="subtotal">Subtotal:</label>
-          <input
-            type="text"
-            id="subtotal"
-            value={subtotal.toFixed(2)}
-            readOnly
-          />
-        </div>
-        {/* Campo para el total */}
-        <div className="mb-3">
-          <label htmlFor="total">Total:</label>
-          <input type="text" id="total" value={total.toFixed(2)} readOnly />
-        </div>
-        {/* Botón para registrar un nuevo cliente */}
-        <button type="button" onClick={handleRegisterClientClick}>
-          Registrar Cliente
-        </button>
-        {/* Botón para limpiar el formulario */}
-        <button
-          type="button"
-          onClick={handlePagarFacturaClick}
-          disabled={facturaGenerada}
-        >
-          Generar Factura
-        </button>
-      </form>
-    </div>
+            Generar Factura
+          </button>
+        </form>
+      </div>
+    </Guard>
   );
 };
 
