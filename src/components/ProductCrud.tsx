@@ -12,6 +12,10 @@ import {
   TableRow,
   TextField,
   Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 
 interface Product {
@@ -30,15 +34,20 @@ const ProductCrud: React.FC = () => {
   const [productStock, setProductStock] = useState<number>(0);
   const [productPrice, setProductPrice] = useState<number>(0);
   const [productQuantity, setProductQuantity] = useState<number>(0);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [productToDeleteIndex, setProductToDeleteIndex] = useState<
+    number | null
+  >(null);
 
   useEffect(() => {
     const savedProducts = JSON.parse(localStorage.getItem('products') || '[]');
     setProducts(savedProducts);
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('products', JSON.stringify(products));
-  }, [products]);
+  const saveProductsToLocalStorage = (updatedProducts: Product[]) => {
+    localStorage.setItem('products', JSON.stringify(updatedProducts));
+  };
 
   const addProduct = () => {
     if (
@@ -61,8 +70,22 @@ const ProductCrud: React.FC = () => {
       total: productStock * productPrice,
     };
 
-    setProducts([...products, newProduct]);
+    if (editingProduct) {
+      // Si estamos editando, actualizamos el producto existente
+      const updatedProducts = products.map((product, index) =>
+        index === productToDeleteIndex ? newProduct : product
+      );
+      setProducts(updatedProducts);
+      saveProductsToLocalStorage(updatedProducts);
+      setEditingProduct(null);
+    } else {
+      // Si no estamos editando, agregamos un nuevo producto
+      const updatedProducts = [...products, newProduct];
+      setProducts(updatedProducts);
+      saveProductsToLocalStorage(updatedProducts);
+    }
 
+    // Limpiamos los campos del formulario
     setProductName('');
     setProductCode('');
     setProductStock(0);
@@ -70,9 +93,36 @@ const ProductCrud: React.FC = () => {
     setProductQuantity(0);
   };
 
-  const deleteProduct = (index: number) => {
-    const updatedProducts: Product[] = products.filter((_, i) => i !== index);
-    setProducts(updatedProducts);
+  const confirmDelete = (index: number) => {
+    setProductToDeleteIndex(index);
+    setDeleteConfirmationOpen(true);
+  };
+
+  const deleteProduct = () => {
+    if (productToDeleteIndex !== null) {
+      const updatedProducts: Product[] = products.filter(
+        (_, i) => i !== productToDeleteIndex
+      );
+      setProducts(updatedProducts);
+      saveProductsToLocalStorage(updatedProducts);
+      setDeleteConfirmationOpen(false);
+      setProductToDeleteIndex(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setDeleteConfirmationOpen(false);
+    setProductToDeleteIndex(null);
+  };
+
+  const editProduct = (index: number) => {
+    const productToEdit = products[index];
+    setProductName(productToEdit.name);
+    setProductCode(productToEdit.code);
+    setProductStock(productToEdit.stock);
+    setProductPrice(productToEdit.price);
+    setProductQuantity(productToEdit.quantity);
+    setEditingProduct(productToEdit);
   };
 
   return (
@@ -122,7 +172,7 @@ const ProductCrud: React.FC = () => {
               margin="normal"
             />
             <Button variant="contained" color="primary" onClick={addProduct}>
-              Agregar Producto
+              {editingProduct ? 'Guardar Cambios' : 'Agregar Producto'}
             </Button>
           </form>
         </div>
@@ -155,9 +205,17 @@ const ProductCrud: React.FC = () => {
                     <Button
                       variant="contained"
                       color="secondary"
-                      onClick={() => deleteProduct(index)}
+                      onClick={() => confirmDelete(index)}
                     >
                       Eliminar
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => editProduct(index)}
+                      style={{ marginLeft: '8px' }}
+                    >
+                      Editar
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -166,6 +224,21 @@ const ProductCrud: React.FC = () => {
           </Table>
         </TableContainer>
       </Container>
+
+      <Dialog open={deleteConfirmationOpen}>
+        <DialogTitle>Confirmar Eliminación</DialogTitle>
+        <DialogContent>
+          ¿Estás seguro de que deseas eliminar este registro?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelDelete} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={deleteProduct} color="secondary">
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Guard>
   );
 };

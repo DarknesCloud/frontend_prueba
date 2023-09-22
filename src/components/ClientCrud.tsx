@@ -12,6 +12,10 @@ import {
   TableRow,
   TableCell,
   Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 
 interface Client {
@@ -25,15 +29,20 @@ const ClientCrud: React.FC = () => {
   const [clientName, setClientName] = useState<string>('');
   const [clientRtn, setClientRtn] = useState<string>('');
   const [clientAddress, setClientAddress] = useState<string>('');
+  const [editingClient, setEditingClient] = useState<Client | null>(null);
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [clientToDeleteIndex, setClientToDeleteIndex] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     const savedClients = JSON.parse(localStorage.getItem('clients') || '[]');
     setClients(savedClients);
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('clients', JSON.stringify(clients));
-  }, [clients]);
+  const saveClientsToLocalStorage = (updatedClients: Client[]) => {
+    localStorage.setItem('clients', JSON.stringify(updatedClients));
+  };
 
   const addClient = () => {
     if (!clientName || !clientRtn || !clientAddress) {
@@ -47,16 +56,55 @@ const ClientCrud: React.FC = () => {
       address: clientAddress,
     };
 
-    setClients([...clients, newClient]);
+    if (editingClient) {
+      // Si estamos editando, actualizamos el cliente existente
+      const updatedClients = clients.map((client) =>
+        client === editingClient ? newClient : client
+      );
+      setClients(updatedClients);
+      saveClientsToLocalStorage(updatedClients);
+      setEditingClient(null);
+    } else {
+      // Si no estamos editando, agregamos un nuevo cliente
+      const updatedClients = [...clients, newClient];
+      setClients(updatedClients);
+      saveClientsToLocalStorage(updatedClients);
+    }
 
+    // Limpiamos los campos del formulario
     setClientName('');
     setClientRtn('');
     setClientAddress('');
   };
 
-  const deleteClient = (index: number) => {
-    const updatedClients: Client[] = clients.filter((_, i) => i !== index);
-    setClients(updatedClients);
+  const confirmDelete = (index: number) => {
+    setClientToDeleteIndex(index);
+    setDeleteConfirmationOpen(true);
+  };
+
+  const deleteClient = () => {
+    if (clientToDeleteIndex !== null) {
+      const updatedClients: Client[] = clients.filter(
+        (_, i) => i !== clientToDeleteIndex
+      );
+      setClients(updatedClients);
+      saveClientsToLocalStorage(updatedClients);
+      setDeleteConfirmationOpen(false);
+      setClientToDeleteIndex(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setDeleteConfirmationOpen(false);
+    setClientToDeleteIndex(null);
+  };
+
+  const editClient = (index: number) => {
+    const clientToEdit = clients[index];
+    setClientName(clientToEdit.name);
+    setClientRtn(clientToEdit.rtn);
+    setClientAddress(clientToEdit.address);
+    setEditingClient(clientToEdit);
   };
 
   return (
@@ -89,7 +137,7 @@ const ClientCrud: React.FC = () => {
               margin="normal"
             />
             <Button variant="contained" color="primary" onClick={addClient}>
-              Agregar Cliente
+              {editingClient ? 'Guardar Cambios' : 'Agregar Cliente'}
             </Button>
           </form>
         </div>
@@ -117,9 +165,17 @@ const ClientCrud: React.FC = () => {
                     <Button
                       variant="contained"
                       color="secondary"
-                      onClick={() => deleteClient(index)}
+                      onClick={() => confirmDelete(index)}
                     >
                       Eliminar
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => editClient(index)}
+                      style={{ marginLeft: '8px' }}
+                    >
+                      Editar
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -128,6 +184,21 @@ const ClientCrud: React.FC = () => {
           </Table>
         </TableContainer>
       </Container>
+
+      <Dialog open={deleteConfirmationOpen}>
+        <DialogTitle>Confirmar Eliminación</DialogTitle>
+        <DialogContent>
+          ¿Estás seguro de que deseas eliminar este registro?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelDelete} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={deleteClient} color="secondary">
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Guard>
   );
 };
