@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -9,6 +9,7 @@ import {
   ListItemIcon,
   ListItemText,
   Box,
+  Typography,
 } from '@mui/material';
 import {
   AccountCircle,
@@ -20,6 +21,7 @@ import { Link } from 'react-router-dom';
 
 const TopBar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [userName, setUserName] = useState('');
 
   const handleMenuOpen = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -36,8 +38,17 @@ const TopBar = () => {
     window.location.href = '/';
   };
 
+  useEffect(() => {
+    // Obtener el nombre del usuario desde el LocalStorage si está autenticado
+    const userSession = sessionStorage.getItem('userSession');
+    if (userSession) {
+      const userData = JSON.parse(userSession);
+      setUserName(userData.name);
+    }
+  }, []);
+
   return (
-    <AppBar position="fixed">
+    <AppBar position="fixed" color="default">
       <Toolbar>
         {/* Agregar un enlace al inicio */}
         <Link
@@ -48,6 +59,12 @@ const TopBar = () => {
         </Link>
         {/* Espacio flexible para empujar elementos al extremo derecho */}
         <Box sx={{ flexGrow: 1 }} />
+        {/* Nombre del usuario */}
+        {userName && (
+          <Typography variant="body1" sx={{ marginRight: '16px' }}>
+            Hola, {userName}
+          </Typography>
+        )}
         {/* Botón de perfil con menú desplegable */}
         <IconButton
           color="inherit"
