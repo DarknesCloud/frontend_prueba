@@ -1,4 +1,5 @@
-import './App.css';
+import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import {
   ClientCrud,
   Dashboard,
@@ -6,8 +7,9 @@ import {
   Login,
   ProductCrud,
   Register,
+  Sidebar,
+  TopBar,
 } from './pages';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 function App() {
   return (
@@ -20,14 +22,32 @@ function App() {
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/products" element={<ProductCrud />} />
-            <Route path="/clients" element={<ClientCrud />} />
-            <Route path="/invoice" element={<Factura />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route
+              path="/dashboard/*"
+              element={
+                <div style={{ display: 'flex' }}>
+                  <Sidebar />
+                  <TopBar />
+                  <DashboardRoutes />
+                </div>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </main>
     </div>
+  );
+}
+
+function DashboardRoutes() {
+  return (
+    <Routes>
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/products" element={<ProductCrud />} />
+      <Route path="/clients" element={<ClientCrud />} />
+      <Route path="/invoice" element={<Factura />} />
+      {/* Agrega tus otras rutas aquí */}
+    </Routes>
   );
 }
 

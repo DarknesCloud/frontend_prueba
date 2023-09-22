@@ -1,0 +1,25 @@
+body {
+  background-color: #f5f3f3;
+}
+
+.containerDashboard {
+  width: 100%;
+  height: auto;
+  margin-top: 80px;
+  margin-left: 50px;
+}
+.chartjsContainer {
+  width: 97%;
+  margin-top: 50px;
+  margin-right: 40px;
+  display: flex;
+  justify-content: center;
+  border-radius: 10px;
+  align-items: center;
+  background-color: white;
+  box-shadow: 1px 1px 3px 3px #e4e2e2;
+}
+
+.chartjsContainer canvas {
+  width: 500px;
+}

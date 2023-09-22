@@ -1,5 +1,9 @@
-import React, { useEffect, useRef } from 'react';
-import Chart, { ChartConfiguration, ChartTypeRegistry } from 'chart.js/auto';
+import React, { useEffect, useRef, useState } from 'react';
+import Chart, { ChartConfiguration } from 'chart.js/auto';
+import { Box, Grid } from '@mui/material';
+import { ExitToApp, People, ShoppingCart, Store } from '@mui/icons-material';
+import Guard from './Guard';
+import StatCard from './StatCard';
 
 interface DashboardProps {
   // Define las propiedades del componente si es necesario
@@ -9,7 +13,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
   let myChart: any;
 
+  const [clientCount, setClientCount] = useState<number>(0);
+  const [saleCount, setSaleCount] = useState<number>(0);
+  const [productCount, setProductCount] = useState<number>(0);
+  const [userCount, setUserCount] = useState<number>(0);
+
   useEffect(() => {
+    const clientsDataString = localStorage.getItem('clients');
+    const productsDataString = localStorage.getItem('products');
+    const usersDataString = localStorage.getItem('users');
+
     if (chartRef.current) {
       const ctx = chartRef.current.getContext('2d');
 
@@ -58,22 +71,78 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
       // Crea el nuevo gráfico de dona y almacena la referencia en myChart
       myChart = new Chart(ctx as CanvasRenderingContext2D, chartConfig);
+
+      if (clientsDataString) {
+        const clientsData = JSON.parse(clientsDataString);
+        setClientCount(clientsData.length);
+      }
+
+      if (salesDataString) {
+        const salesData = JSON.parse(salesDataString);
+        setSaleCount(salesData.length);
+      }
+
+      if (productsDataString) {
+        const productsData = JSON.parse(productsDataString);
+        setProductCount(productsData.length);
+      }
+
+      if (usersDataString) {
+        const usersData = JSON.parse(usersDataString);
+        setUserCount(usersData.length);
+      }
     }
   }, []);
 
-  const handleLogout = () => {
-    // Eliminar la sesión del SessionStorage
-    sessionStorage.removeItem('userSession');
-
-    // Redirigir al inicio de sesión después de cerrar la sesión
-    window.location.href = '/'; // Puedes usar Navigate para redirigir de manera programática si lo prefieres
-  };
-
   return (
-    <div>
-      <canvas ref={chartRef}></canvas>
-
-      <button onClick={handleLogout}>Cerrar Sesión</button>
+    <div className="containerDashboard">
+      <Guard>
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <Box flexGrow={1} width="100%">
+            <Grid
+              container
+              spacing={6}
+              justifyContent="center"
+              alignItems="center"
+              width="100%"
+            >
+              <Grid item xs={12} sm={6} md={3}>
+                <StatCard
+                  title="Clientes"
+                  icon={<People />}
+                  value={clientCount}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <StatCard
+                  title="Ventas"
+                  icon={<ShoppingCart />}
+                  value={saleCount}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <StatCard
+                  title="Productos"
+                  icon={<Store />}
+                  value={productCount}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <StatCard
+                  title="Usuarios"
+                  icon={<ExitToApp />}
+                  value={userCount}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+          <div className="chartjsContainer">
+            <Box m={2}>
+              <canvas ref={chartRef}></canvas>
+            </Box>
+          </div>
+        </Box>
+      </Guard>
     </div>
   );
 };
