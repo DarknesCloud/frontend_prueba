@@ -50,13 +50,6 @@ const TopBar = () => {
   return (
     <AppBar position="fixed" color="default">
       <Toolbar>
-        {/* Agregar un enlace al inicio */}
-        <Link
-          to="/dashboard"
-          style={{ textDecoration: 'none', color: 'inherit' }}
-        >
-          <Button color="inherit">Inicio</Button>
-        </Link>
         {/* Espacio flexible para empujar elementos al extremo derecho */}
         <Box sx={{ flexGrow: 1 }} />
         {/* Nombre del usuario */}
