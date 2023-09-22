@@ -1,7 +1,18 @@
 import jsPDF from 'jspdf';
 import { useState, useEffect } from 'react';
+import {
+  Container,
+  Typography,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+  Grid,
+  Paper,
+} from '@mui/material';
 import Guard from './Guard';
-
 // Define una interfaz para el cliente
 interface Client {
   name: string;
@@ -332,112 +343,142 @@ const Factura = () => {
 
   return (
     <Guard>
-      <div>
-        <h2>Generar Factura</h2>
-        <form>
-          {/* Campo de selección de cliente */}
-          <div className="mb-3">
-            <label htmlFor="client">Cliente:</label>
-            <select
-              id="client"
-              className="form-select"
-              value={selectedClient}
-              onChange={(e) => setSelectedClient(e.target.value)}
-            >
-              <option value="">Seleccionar cliente</option>
-              {clientList.map((client) => (
-                <option key={client.name} value={client.name}>
-                  {client.name}
-                </option>
-              ))}
-              <option>Consumidor final</option>
-            </select>
-          </div>
-          {/* Campo para el tipo de factura (Crédito / Contado) */}
-          <div className="mb-3">
-            <label htmlFor="invoice-type">Tipo de Factura:</label>
-            <select
-              id="invoice-type"
-              className="form-select"
-              value={tipoFactura}
-              onChange={(e) => setTipoFactura(e.target.value)}
-            >
-              <option value="">Seleccionar tipo</option>
-              <option value="Credito">Crédito</option>
-              <option value="Contado">Contado</option>
-            </select>
-          </div>
-          {/* Campo para el producto */}
-          <div className="mb-3">
-            <label htmlFor="product">Producto:</label>
-            <input
-              type="text"
+      <Container maxWidth="md" style={{ marginTop: '100px' }}>
+        <Paper elevation={3} style={{ padding: '20px' }}>
+          <Typography variant="h4" gutterBottom>
+            Generar Factura
+          </Typography>
+          <form>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel htmlFor="client">Cliente</InputLabel>
+                  <Select
+                    id="client"
+                    label="Cliente"
+                    value={selectedClient}
+                    onChange={(e) => setSelectedClient(e.target.value)}
+                  >
+                    <MenuItem value="">
+                      <em>Seleccionar cliente</em>
+                    </MenuItem>
+                    {clientList.map((client) => (
+                      <MenuItem key={client.name} value={client.name}>
+                        {client.name}
+                      </MenuItem>
+                    ))}
+                    <MenuItem value="Consumidor final">
+                      Consumidor final
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel htmlFor="invoice-type">
+                    Tipo de Factura
+                  </InputLabel>
+                  <Select
+                    id="invoice-type"
+                    label="Tipo de Factura"
+                    value={tipoFactura}
+                    onChange={(e) => setTipoFactura(e.target.value)}
+                  >
+                    <MenuItem value="">
+                      <em>Seleccionar tipo</em>
+                    </MenuItem>
+                    <MenuItem value="Credito">Crédito</MenuItem>
+                    <MenuItem value="Contado">Contado</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+            <TextField
               id="product"
+              label="Producto"
+              fullWidth
+              variant="outlined"
               value={selectedProduct}
               onChange={(e) => setSelectedProduct(e.target.value)}
               onBlur={(e) => handleProductSelect(e.target.value)}
+              style={{ marginTop: '20px' }}
             />
-          </div>
-          {/* Campo para el código de producto */}
-          <div className="mb-3">
-            <label htmlFor="product-code">Código de Producto:</label>
-            <input
-              type="text"
+            <TextField
               id="product-code"
+              label="Código de Producto"
+              fullWidth
+              variant="outlined"
               value={codigoProducto}
               onChange={(e) => setCodigoProducto(e.target.value)}
+              style={{ marginTop: '20px' }}
             />
-          </div>
-          {/* Campo para el precio */}
-          <div className="mb-3">
-            <label htmlFor="price">Precio:</label>
-            <input
-              type="number"
+            <TextField
               id="price"
+              label="Precio"
+              fullWidth
+              variant="outlined"
+              type="number"
               value={precio}
               onChange={(e) => setPrecio(Number(e.target.value))}
+              style={{ marginTop: '20px' }}
             />
-          </div>
-          {/* Campo para la cantidad */}
-          {errorCantidad && <p className="text-danger">{errorCantidad}</p>}
-          <div className="mb-3">
-            <label htmlFor="quantity">Cantidad:</label>
-            <input
-              type="number"
+            {errorCantidad && (
+              <Typography variant="body2" color="error">
+                {errorCantidad}
+              </Typography>
+            )}
+            <TextField
               id="quantity"
+              label="Cantidad"
+              fullWidth
+              variant="outlined"
+              type="number"
               value={cantidad}
               onChange={(e) => handleCantidadChange(Number(e.target.value))}
+              style={{ marginTop: '20px' }}
             />
-          </div>
-          {/* Campo para el subtotal */}
-          <div className="mb-3">
-            <label htmlFor="subtotal">Subtotal:</label>
-            <input
-              type="text"
+            <TextField
               id="subtotal"
+              label="Subtotal"
+              fullWidth
+              variant="outlined"
               value={subtotal.toFixed(2)}
-              readOnly
+              InputProps={{
+                readOnly: true,
+              }}
+              style={{ marginTop: '20px' }}
             />
-          </div>
-          {/* Campo para el total */}
-          <div className="mb-3">
-            <label htmlFor="total">Total:</label>
-            <input type="text" id="total" value={total.toFixed(2)} readOnly />
-          </div>
-          {/* Botón para registrar un nuevo cliente */}
-          <button type="button" onClick={handleRegisterClientClick}>
-            Registrar Cliente
-          </button>
-          {/* Botón para limpiar el formulario */}
-          <button
-            type="button"
-            onClick={handlePagarFacturaClick}
-            disabled={facturaGenerada}
-          >
-            Generar Factura
-          </button>
-        </form>
-      </div>
+            <TextField
+              id="total"
+              label="Total"
+              fullWidth
+              variant="outlined"
+              value={total.toFixed(2)}
+              InputProps={{
+                readOnly: true,
+              }}
+              style={{ marginTop: '20px' }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleRegisterClientClick}
+              style={{ marginTop: '20px' }}
+            >
+              Registrar Cliente
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handlePagarFacturaClick}
+              disabled={facturaGenerada}
+              style={{ marginTop: '20px', marginLeft: '10px' }}
+            >
+              Generar Factura
+            </Button>
+          </form>
+        </Paper>
+      </Container>
     </Guard>
   );
 };

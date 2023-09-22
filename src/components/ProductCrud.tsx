@@ -1,31 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import Guard from './Guard';
+import {
+  Button,
+  Container,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from '@mui/material';
 
 interface Product {
   name: string;
-  code: string; // Nuevo campo: Código de Producto
+  code: string;
   stock: number;
   price: number;
-  quantity: number; // Nuevo campo: Cantidad
+  quantity: number;
   total: number;
 }
 
 const ProductCrud: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [productName, setProductName] = useState<string>('');
-  const [productCode, setProductCode] = useState<string>(''); // Nuevo campo: Código de Producto
+  const [productCode, setProductCode] = useState<string>('');
   const [productStock, setProductStock] = useState<number>(0);
   const [productPrice, setProductPrice] = useState<number>(0);
-  const [productQuantity, setProductQuantity] = useState<number>(0); // Nuevo campo: Cantidad
+  const [productQuantity, setProductQuantity] = useState<number>(0);
 
   useEffect(() => {
-    // Cargar la lista de productos desde el LocalStorage al iniciar el componente
     const savedProducts = JSON.parse(localStorage.getItem('products') || '[]');
     setProducts(savedProducts);
   }, []);
 
   useEffect(() => {
-    // Guardar la lista de productos en el LocalStorage cuando cambie
     localStorage.setItem('products', JSON.stringify(products));
   }, [products]);
 
@@ -43,20 +54,20 @@ const ProductCrud: React.FC = () => {
 
     const newProduct: Product = {
       name: productName,
-      code: productCode, // Nuevo campo: Código de Producto
+      code: productCode,
       stock: productStock,
       price: productPrice,
-      quantity: productQuantity, // Nuevo campo: Cantidad
+      quantity: productQuantity,
       total: productStock * productPrice,
     };
 
     setProducts([...products, newProduct]);
 
     setProductName('');
-    setProductCode(''); // Nuevo campo: Limpiar Código de Producto
+    setProductCode('');
     setProductStock(0);
     setProductPrice(0);
-    setProductQuantity(0); // Nuevo campo: Limpiar Cantidad
+    setProductQuantity(0);
   };
 
   const deleteProduct = (index: number) => {
@@ -66,113 +77,95 @@ const ProductCrud: React.FC = () => {
 
   return (
     <Guard>
-      <div className="container">
-        <h2>CRUD de Productos</h2>
-        <form>
-          <div className="mb-3">
-            <label htmlFor="productName" className="form-label">
-              Nombre
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="productName"
+      <Container>
+        <div className="containerCRUDS">
+          <Typography variant="h4" gutterBottom>
+            CRUD de Productos
+          </Typography>
+          <form>
+            <TextField
+              label="Nombre"
+              fullWidth
               value={productName}
-              onChange={(e) => setProductName(e.target.value)}
+              onChange={(e: any) => setProductName(e.target.value)}
+              margin="normal"
             />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="productCode" className="form-label">
-              Código de Producto {/* Nuevo campo */}
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="productCode"
+            <TextField
+              label="Código de Producto"
+              fullWidth
               value={productCode}
-              onChange={(e) => setProductCode(e.target.value)}
+              onChange={(e: any) => setProductCode(e.target.value)}
+              margin="normal"
             />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="productStock" className="form-label">
-              Existencias
-            </label>
-            <input
+            <TextField
+              label="Existencias"
+              fullWidth
               type="number"
-              className="form-control"
-              id="productStock"
               value={productStock}
-              onChange={(e) => setProductStock(Number(e.target.value))}
+              onChange={(e: any) => setProductStock(Number(e.target.value))}
+              margin="normal"
             />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="productPrice" className="form-label">
-              Precio
-            </label>
-            <input
+            <TextField
+              label="Precio"
+              fullWidth
               type="number"
-              className="form-control"
-              id="productPrice"
               value={productPrice}
-              onChange={(e) => setProductPrice(Number(e.target.value))}
+              onChange={(e: any) => setProductPrice(Number(e.target.value))}
+              margin="normal"
             />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="productQuantity" className="form-label">
-              Cantidad {/* Nuevo campo */}
-            </label>
-            <input
+            <TextField
+              label="Cantidad"
+              fullWidth
               type="number"
-              className="form-control"
-              id="productQuantity"
               value={productQuantity}
-              onChange={(e) => setProductQuantity(Number(e.target.value))}
+              onChange={(e: any) => setProductQuantity(Number(e.target.value))}
+              margin="normal"
             />
-          </div>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={addProduct}
-          >
-            Agregar Producto
-          </button>
-        </form>
-        <h3>Lista de Productos</h3>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Código de Producto</th> {/* Nuevo campo */}
-              <th>Existencias</th>
-              <th>Precio</th>
-              <th>Cantidad</th> {/* Nuevo campo */}
-              <th>Total</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product, index) => (
-              <tr key={index}>
-                <td>{product.name}</td>
-                <td>{product.code}</td> {/* Nuevo campo */}
-                <td>{product.stock}</td>
-                <td>{product.price}</td>
-                <td>{product.quantity}</td> {/* Nuevo campo */}
-                <td>{product.total}</td>
-                <td>
-                  <button
-                    type="button"
-                    className="btn btn-danger"
-                    onClick={() => deleteProduct(index)}
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            <Button variant="contained" color="primary" onClick={addProduct}>
+              Agregar Producto
+            </Button>
+          </form>
+        </div>
+        <Typography variant="h5" gutterBottom>
+          Lista de Productos
+        </Typography>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Nombre</TableCell>
+                <TableCell>Código de Producto</TableCell>
+                <TableCell>Existencias</TableCell>
+                <TableCell>Precio</TableCell>
+                <TableCell>Cantidad</TableCell>
+                <TableCell>Total</TableCell>
+                <TableCell>Acciones</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {products.map((product, index) => (
+                <TableRow key={index}>
+                  <TableCell>{product.name}</TableCell>
+                  <TableCell>{product.code}</TableCell>
+                  <TableCell>{product.stock}</TableCell>
+                  <TableCell>{product.price}</TableCell>
+                  <TableCell>{product.quantity}</TableCell>
+                  <TableCell>{product.total}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => deleteProduct(index)}
+                    >
+                      Eliminar
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Container>
     </Guard>
   );
 };

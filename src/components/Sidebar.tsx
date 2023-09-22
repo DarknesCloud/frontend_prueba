@@ -31,26 +31,26 @@ const Sidebar: React.FC = () => {
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
-        <ListItem button component={Link} to="/profile">
+        <ListItem button component={Link} to="dashboard/clients">
           <ListItemIcon>
             <PersonIcon />
           </ListItemIcon>
-          <ListItemText primary="Profile" />
+          <ListItemText primary="Clientes" />
         </ListItem>
-        <ListItem button component={Link} to="/products">
+        <ListItem button component={Link} to="dashboard/products">
           <ListItemIcon>
             <ShoppingCartIcon />
           </ListItemIcon>
-          <ListItemText primary="Products" />
+          <ListItemText primary="Productos" />
         </ListItem>
       </List>
       <Divider />
       <List>
-        <ListItem button component={Link} to="/analytics">
+        <ListItem button component={Link} to="dashboard/invoice">
           <ListItemIcon>
             <BarChartIcon />
           </ListItemIcon>
-          <ListItemText primary="Analytics" />
+          <ListItemText primary="Facturar" />
         </ListItem>
       </List>
     </Drawer>

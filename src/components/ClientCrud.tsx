@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import Guard from './Guard';
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Table,
+  TableContainer,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Paper,
+} from '@mui/material';
 
 interface Client {
   name: string;
@@ -14,13 +27,11 @@ const ClientCrud: React.FC = () => {
   const [clientAddress, setClientAddress] = useState<string>('');
 
   useEffect(() => {
-    // Cargar la lista de clientes desde el LocalStorage al iniciar el componente
     const savedClients = JSON.parse(localStorage.getItem('clients') || '[]');
     setClients(savedClients);
   }, []);
 
   useEffect(() => {
-    // Guardar la lista de clientes en el LocalStorage cuando cambie
     localStorage.setItem('clients', JSON.stringify(clients));
   }, [clients]);
 
@@ -50,79 +61,73 @@ const ClientCrud: React.FC = () => {
 
   return (
     <Guard>
-      <div className="container">
-        <h2>CRUD de Clientes</h2>
-        <form>
-          <div className="mb-3">
-            <label htmlFor="clientName" className="form-label">
-              Nombre
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="clientName"
+      <Container>
+        <div className="containerCRUDS">
+          <Typography variant="h4" gutterBottom>
+            CRUD de Clientes
+          </Typography>
+          <form>
+            <TextField
+              label="Nombre"
+              fullWidth
               value={clientName}
               onChange={(e) => setClientName(e.target.value)}
+              margin="normal"
             />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="clientRtn" className="form-label">
-              RTN
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="clientRtn"
+            <TextField
+              label="RTN"
+              fullWidth
               value={clientRtn}
               onChange={(e) => setClientRtn(e.target.value)}
+              margin="normal"
             />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="clientAddress" className="form-label">
-              Dirección
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="clientAddress"
+            <TextField
+              label="Dirección"
+              fullWidth
               value={clientAddress}
               onChange={(e) => setClientAddress(e.target.value)}
+              margin="normal"
             />
-          </div>
-          <button type="button" className="btn btn-primary" onClick={addClient}>
-            Agregar Cliente
-          </button>
-        </form>
-        <h3>Lista de Clientes</h3>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>RTN</th>
-              <th>Dirección</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {clients.map((client, index) => (
-              <tr key={index}>
-                <td>{client.name}</td>
-                <td>{client.rtn}</td>
-                <td>{client.address}</td>
-                <td>
-                  <button
-                    type="button"
-                    className="btn btn-danger"
-                    onClick={() => deleteClient(index)}
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            <Button variant="contained" color="primary" onClick={addClient}>
+              Agregar Cliente
+            </Button>
+          </form>
+        </div>
+
+        <Typography variant="h5" gutterBottom>
+          Lista de Clientes
+        </Typography>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Nombre</TableCell>
+                <TableCell>RTN</TableCell>
+                <TableCell>Dirección</TableCell>
+                <TableCell>Acciones</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {clients.map((client, index) => (
+                <TableRow key={index}>
+                  <TableCell>{client.name}</TableCell>
+                  <TableCell>{client.rtn}</TableCell>
+                  <TableCell>{client.address}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => deleteClient(index)}
+                    >
+                      Eliminar
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Container>
     </Guard>
   );
 };
