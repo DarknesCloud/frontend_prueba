@@ -7,6 +7,7 @@ import {
   Login,
   ProductCrud,
   Register,
+  RegisterAdmin,
   Sidebar,
   TopBar,
 } from './pages';
@@ -22,6 +23,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/registerAdmin" element={<RegisterAdmin />} />
             <Route
               path="/dashboard/*"
               element={
