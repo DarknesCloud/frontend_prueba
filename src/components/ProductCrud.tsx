@@ -39,6 +39,7 @@ const ProductCrud: React.FC = () => {
   const [productToDeleteIndex, setProductToDeleteIndex] = useState<
     number | null
   >(null);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   useEffect(() => {
     const savedProducts = JSON.parse(localStorage.getItem('products') || '[]');
@@ -125,6 +126,14 @@ const ProductCrud: React.FC = () => {
     setEditingProduct(productToEdit);
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Guard>
       <Container>
@@ -179,7 +188,23 @@ const ProductCrud: React.FC = () => {
         <Typography variant="h5" gutterBottom>
           Lista de Productos
         </Typography>
-        <TableContainer component={Paper}>
+        <Container
+          component={Paper}
+          style={{
+            marginTop: '20px',
+            marginBottom: '50px',
+            padding: '15px',
+          }}
+        >
+          <TextField
+            label="Buscar Producto"
+            fullWidth
+            value={searchTerm}
+            onChange={handleSearchChange}
+            margin="normal"
+          />
+        </Container>
+        <TableContainer component={Paper} style={{ marginBottom: '50px' }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -193,7 +218,7 @@ const ProductCrud: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {products.map((product, index) => (
+              {filteredProducts.map((product, index) => (
                 <TableRow key={index}>
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.code}</TableCell>

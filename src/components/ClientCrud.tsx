@@ -34,6 +34,7 @@ const ClientCrud: React.FC = () => {
   const [clientToDeleteIndex, setClientToDeleteIndex] = useState<number | null>(
     null
   );
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   useEffect(() => {
     const savedClients = JSON.parse(localStorage.getItem('clients') || '[]');
@@ -107,6 +108,14 @@ const ClientCrud: React.FC = () => {
     setEditingClient(clientToEdit);
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredClients = clients.filter((client) =>
+    client.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Guard>
       <Container>
@@ -145,6 +154,22 @@ const ClientCrud: React.FC = () => {
         <Typography variant="h5" gutterBottom>
           Lista de Clientes
         </Typography>
+        <Container
+          component={Paper}
+          style={{
+            marginTop: '20px',
+            marginBottom: '50px',
+            padding: '15px',
+          }}
+        >
+          <TextField
+            label="Buscar Cliente"
+            fullWidth
+            value={searchTerm}
+            onChange={handleSearchChange}
+            margin="normal"
+          />
+        </Container>
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -156,7 +181,7 @@ const ClientCrud: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {clients.map((client, index) => (
+              {filteredClients.map((client, index) => (
                 <TableRow key={index}>
                   <TableCell>{client.name}</TableCell>
                   <TableCell>{client.rtn}</TableCell>
