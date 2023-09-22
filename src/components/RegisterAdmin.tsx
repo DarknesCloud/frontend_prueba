@@ -10,7 +10,6 @@ const RegisterAdmin: React.FC = () => {
   const [isFirstTime, setIsFirstTime] = useState(true);
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [enteredPassword, setEnteredPassword] = useState('');
-  const [adminPassword, setAdminPassword] = useState('');
 
   const navigate = useNavigate();
 
@@ -20,18 +19,6 @@ const RegisterAdmin: React.FC = () => {
       setIsFirstTime(false);
     }
   }, []);
-
-  const handleCreateAdminPassword = () => {
-    if (!adminPassword) {
-      alert('Por favor, ingrese una contraseña de administrador.');
-      return;
-    }
-
-    localStorage.setItem('adminPassword', adminPassword);
-    setIsAdminAuthenticated(true);
-    setIsFirstTime(false);
-    alert('Contraseña de administrador creada con éxito.');
-  };
 
   const handleAuthenticate = () => {
     const storedAdminPassword = localStorage.getItem('adminPassword');

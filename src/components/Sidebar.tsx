@@ -78,6 +78,12 @@ const Sidebar: React.FC = () => {
             </ListItemIcon>
             <ListItemText primary="Productos" />
           </ListItem>
+          <ListItem button component={Link} to="dashboard/users">
+            <ListItemIcon>
+              <ShoppingCartIcon />
+            </ListItemIcon>
+            <ListItemText primary="Usuarios" />
+          </ListItem>
         </List>
         <Divider />
         <List>

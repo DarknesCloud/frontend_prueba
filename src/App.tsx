@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import {
   ClientCrud,
@@ -10,6 +9,7 @@ import {
   RegisterAdmin,
   Sidebar,
   TopBar,
+  UserCrud,
 } from './pages';
 
 function App() {
@@ -45,6 +45,7 @@ function DashboardRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Dashboard />} />
+      <Route path="/dashboard/users" element={<UserCrud />} />
       <Route path="/dashboard/products" element={<ProductCrud />} />
       <Route path="/dashboard/clients" element={<ClientCrud />} />
       <Route path="/dashboard/invoice" element={<Factura />} />
