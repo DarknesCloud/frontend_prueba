@@ -10,6 +10,8 @@ const RegisterAdmin: React.FC = () => {
   const [isFirstTime, setIsFirstTime] = useState(true);
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [enteredPassword, setEnteredPassword] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
+
   const navigate = useNavigate();
 
   useEffect(() => {
