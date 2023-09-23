@@ -11,6 +11,7 @@ import {
   Button,
   Grid,
   Paper,
+  Autocomplete,
 } from '@mui/material';
 import Guard from './Guard';
 // Define una interfaz para el cliente
@@ -393,16 +394,25 @@ const Factura = () => {
                 </FormControl>
               </Grid>
             </Grid>
-            <TextField
+            <Autocomplete
               id="product"
-              label="Producto"
-              fullWidth
-              variant="outlined"
+              options={productList.map((product) => product.name)}
               value={selectedProduct}
-              onChange={(e) => setSelectedProduct(e.target.value)}
-              onBlur={(e) => handleProductSelect(e.target.value)}
-              style={{ marginTop: '20px' }}
+              onChange={(_, newValue: any) => setSelectedProduct(newValue)}
+              onInputChange={(e, newInputValue) => {
+                setSelectedProduct(newInputValue);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Producto"
+                  fullWidth
+                  variant="outlined"
+                  style={{ marginTop: '20px' }}
+                />
+              )}
             />
+
             <TextField
               id="product-code"
               label="Código de Producto"
