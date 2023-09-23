@@ -1,5 +1,7 @@
 import jsPDF from 'jspdf';
 import { useState, useEffect } from 'react';
+import { Fade } from 'react-awesome-reveal';
+
 import {
   Container,
   Typography,
@@ -344,153 +346,155 @@ const Factura = () => {
 
   return (
     <Guard>
-      <Container maxWidth="md" style={{ marginTop: '100px' }}>
-        <Paper elevation={3} style={{ padding: '20px' }}>
-          <Typography variant="h4" gutterBottom>
-            Generar Factura
-          </Typography>
-          <form>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth variant="outlined">
-                  <InputLabel htmlFor="client">Cliente</InputLabel>
-                  <Select
-                    id="client"
-                    label="Cliente"
-                    value={selectedClient}
-                    onChange={(e) => setSelectedClient(e.target.value)}
-                  >
-                    <MenuItem value="">
-                      <em>Seleccionar cliente</em>
-                    </MenuItem>
-                    {clientList.map((client) => (
-                      <MenuItem key={client.name} value={client.name}>
-                        {client.name}
-                      </MenuItem>
-                    ))}
-                    <MenuItem value="Consumidor final">
-                      Consumidor final
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth variant="outlined">
-                  <InputLabel htmlFor="invoice-type">
-                    Tipo de Factura
-                  </InputLabel>
-                  <Select
-                    id="invoice-type"
-                    label="Tipo de Factura"
-                    value={tipoFactura}
-                    onChange={(e) => setTipoFactura(e.target.value)}
-                  >
-                    <MenuItem value="">
-                      <em>Seleccionar tipo</em>
-                    </MenuItem>
-                    <MenuItem value="Credito">Crédito</MenuItem>
-                    <MenuItem value="Contado">Contado</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            </Grid>
-            <Autocomplete
-              id="product"
-              options={productList.map((product) => product.name)}
-              value={selectedProduct}
-              onChange={(_, newValue: any) => setSelectedProduct(newValue)}
-              onInputChange={(e, newInputValue) => {
-                setSelectedProduct(newInputValue);
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Producto"
-                  fullWidth
-                  variant="outlined"
-                  style={{ marginTop: '20px' }}
-                  onChange={(e) => setSelectedProduct(e.target.value)}
-                  onBlur={(e) => handleProductSelect(e.target.value)}
-                />
-              )}
-            />
-
-            <TextField
-              id="product-code"
-              label="Código de Producto"
-              fullWidth
-              variant="outlined"
-              value={codigoProducto}
-              onChange={(e) => setCodigoProducto(e.target.value)}
-              style={{ marginTop: '20px' }}
-            />
-            <TextField
-              id="price"
-              label="Precio"
-              fullWidth
-              variant="outlined"
-              type="number"
-              value={precio}
-              onChange={(e) => setPrecio(Number(e.target.value))}
-              style={{ marginTop: '20px' }}
-            />
-            {errorCantidad && (
-              <Typography variant="body2" color="error">
-                {errorCantidad}
-              </Typography>
-            )}
-            <TextField
-              id="quantity"
-              label="Cantidad"
-              fullWidth
-              variant="outlined"
-              type="number"
-              value={cantidad}
-              onChange={(e) => handleCantidadChange(Number(e.target.value))}
-              style={{ marginTop: '20px' }}
-            />
-            <TextField
-              id="subtotal"
-              label="Subtotal"
-              fullWidth
-              variant="outlined"
-              value={subtotal.toFixed(2)}
-              InputProps={{
-                readOnly: true,
-              }}
-              style={{ marginTop: '20px' }}
-            />
-            <TextField
-              id="total"
-              label="Total"
-              fullWidth
-              variant="outlined"
-              value={total.toFixed(2)}
-              InputProps={{
-                readOnly: true,
-              }}
-              style={{ marginTop: '20px' }}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleRegisterClientClick}
-              style={{ marginTop: '20px' }}
-            >
-              Registrar Cliente
-            </Button>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={handlePagarFacturaClick}
-              disabled={facturaGenerada}
-              style={{ marginTop: '20px', marginLeft: '10px' }}
-            >
+      <Fade>
+        <Container maxWidth="md" style={{ marginTop: '100px' }}>
+          <Paper elevation={3} style={{ padding: '20px' }}>
+            <Typography variant="h4" gutterBottom>
               Generar Factura
-            </Button>
-          </form>
-        </Paper>
-      </Container>
+            </Typography>
+            <form>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth variant="outlined">
+                    <InputLabel htmlFor="client">Cliente</InputLabel>
+                    <Select
+                      id="client"
+                      label="Cliente"
+                      value={selectedClient}
+                      onChange={(e) => setSelectedClient(e.target.value)}
+                    >
+                      <MenuItem value="">
+                        <em>Seleccionar cliente</em>
+                      </MenuItem>
+                      {clientList.map((client) => (
+                        <MenuItem key={client.name} value={client.name}>
+                          {client.name}
+                        </MenuItem>
+                      ))}
+                      <MenuItem value="Consumidor final">
+                        Consumidor final
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth variant="outlined">
+                    <InputLabel htmlFor="invoice-type">
+                      Tipo de Factura
+                    </InputLabel>
+                    <Select
+                      id="invoice-type"
+                      label="Tipo de Factura"
+                      value={tipoFactura}
+                      onChange={(e) => setTipoFactura(e.target.value)}
+                    >
+                      <MenuItem value="">
+                        <em>Seleccionar tipo</em>
+                      </MenuItem>
+                      <MenuItem value="Credito">Crédito</MenuItem>
+                      <MenuItem value="Contado">Contado</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+              <Autocomplete
+                id="product"
+                options={productList.map((product) => product.name)}
+                value={selectedProduct}
+                onChange={(_, newValue: any) => setSelectedProduct(newValue)}
+                onInputChange={(e, newInputValue) => {
+                  setSelectedProduct(newInputValue);
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Producto"
+                    fullWidth
+                    variant="outlined"
+                    style={{ marginTop: '20px' }}
+                    onChange={(e) => setSelectedProduct(e.target.value)}
+                    onBlur={(e) => handleProductSelect(e.target.value)}
+                  />
+                )}
+              />
+
+              <TextField
+                id="product-code"
+                label="Código de Producto"
+                fullWidth
+                variant="outlined"
+                value={codigoProducto}
+                onChange={(e) => setCodigoProducto(e.target.value)}
+                style={{ marginTop: '20px' }}
+              />
+              <TextField
+                id="price"
+                label="Precio"
+                fullWidth
+                variant="outlined"
+                type="number"
+                value={precio}
+                onChange={(e) => setPrecio(Number(e.target.value))}
+                style={{ marginTop: '20px' }}
+              />
+              {errorCantidad && (
+                <Typography variant="body2" color="error">
+                  {errorCantidad}
+                </Typography>
+              )}
+              <TextField
+                id="quantity"
+                label="Cantidad"
+                fullWidth
+                variant="outlined"
+                type="number"
+                value={cantidad}
+                onChange={(e) => handleCantidadChange(Number(e.target.value))}
+                style={{ marginTop: '20px' }}
+              />
+              <TextField
+                id="subtotal"
+                label="Subtotal"
+                fullWidth
+                variant="outlined"
+                value={subtotal.toFixed(2)}
+                InputProps={{
+                  readOnly: true,
+                }}
+                style={{ marginTop: '20px' }}
+              />
+              <TextField
+                id="total"
+                label="Total"
+                fullWidth
+                variant="outlined"
+                value={total.toFixed(2)}
+                InputProps={{
+                  readOnly: true,
+                }}
+                style={{ marginTop: '20px' }}
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleRegisterClientClick}
+                style={{ marginTop: '20px' }}
+              >
+                Registrar Cliente
+              </Button>
+              <Button
+                variant="contained"
+                color="success"
+                onClick={handlePagarFacturaClick}
+                disabled={facturaGenerada}
+                style={{ marginTop: '20px', marginLeft: '10px' }}
+              >
+                Generar Factura
+              </Button>
+            </form>
+          </Paper>
+        </Container>
+      </Fade>
     </Guard>
   );
 };

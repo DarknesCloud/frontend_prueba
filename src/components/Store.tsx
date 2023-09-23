@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Fade } from 'react-awesome-reveal';
 import {
   Card,
   CardContent,
@@ -43,60 +44,67 @@ const ProductCard: React.FC = () => {
   }, []);
 
   return (
-    <Grid container spacing={2} style={{ margin: '50px', marginTop: '80px' }}>
-      {loading ? (
-        <Typography variant="h6">Cargando...</Typography>
-      ) : error ? (
-        <Typography variant="h6" color="error">
-          {error}
-        </Typography>
-      ) : (
-        products.map((product) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={product.id}>
-            <Card style={{ height: '100%' }} className="cardsContainer">
-              <CardMedia
-                component="img"
-                alt={product.title}
-                height="200"
-                image={product.image}
-                title={product.title}
-              />
-              <CardContent>
-                <Typography variant="subtitle2" component="div">
-                  {product.title}
-                </Typography>
-                <Typography variant="subtitle1" color="primary">
-                  $ <span style={{ color: 'green' }}>{product.price}</span>
-                </Typography>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <StarIcon
-                      key={i}
+    <Fade>
+      <Grid container spacing={2} style={{ margin: '50px', marginTop: '80px' }}>
+        {loading ? (
+          <Typography variant="h6">Cargando...</Typography>
+        ) : error ? (
+          <Typography variant="h6" color="error">
+            {error}
+          </Typography>
+        ) : (
+          products.map((product) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={product.id}>
+              <Card style={{ height: '100%' }} className="cardsContainer">
+                <Fade>
+                  <CardMedia
+                    component="img"
+                    alt={product.title}
+                    height="200"
+                    image={product.image}
+                    title={product.title}
+                  />
+                  <CardContent>
+                    <Typography variant="subtitle2" component="div">
+                      {product.title}
+                    </Typography>
+                    <Typography variant="subtitle1" color="primary">
+                      $ <span style={{ color: 'green' }}>{product.price}</span>
+                    </Typography>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <StarIcon
+                          key={i}
+                          style={{
+                            color: i < product.rating.rate ? 'gold' : 'gray',
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <div
                       style={{
-                        color: i < product.rating.rate ? 'gold' : 'gray',
+                        display: 'flex',
+                        justifyContent: 'space-between',
                       }}
-                    />
-                  ))}
-                </div>
-                <div
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
-                  <IconButton aria-label="Agregar al carrito" size="small">
-                    <AddShoppingCartIcon />
-                  </IconButton>
-                  <IconButton
-                    aria-label="Agregar a la lista de deseos"
-                    size="small"
-                  >
-                    <FavoriteIcon />
-                  </IconButton>
-                </div>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))
-      )}
-    </Grid>
+                    >
+                      <IconButton aria-label="Agregar al carrito" size="small">
+                        <AddShoppingCartIcon />
+                      </IconButton>
+                      <IconButton
+                        aria-label="Agregar a la lista de deseos"
+                        size="small"
+                      >
+                        <FavoriteIcon />
+                      </IconButton>
+                    </div>
+                  </CardContent>
+                </Fade>
+              </Card>
+            </Grid>
+          ))
+        )}
+      </Grid>
+    </Fade>
   );
 };
 

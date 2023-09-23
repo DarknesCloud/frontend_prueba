@@ -17,10 +17,13 @@
     "axios": "^1.5.0",
     "bootstrap": "^5.0.1",
     "chart.js": "^4.4.0",
+    "framer-motion": "^10.16.4",
     "jspdf": "^2.5.1",
     "mdb-react-ui-kit": "^6.3.0",
     "react": "^18.2.0",
+    "react-awesome-reveal": "^4.2.5",
     "react-chartjs-2": "^5.2.0",
+    "react-countup": "^6.4.2",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",
     "sass": "^1.67.0"

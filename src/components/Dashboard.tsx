@@ -4,6 +4,7 @@ import { Box, Grid } from '@mui/material';
 import { ExitToApp, People, ShoppingCart, Store } from '@mui/icons-material';
 import Guard from './Guard';
 import StatCard from './StatCard';
+import { Fade } from 'react-awesome-reveal';
 
 interface DashboardProps {
   // Define las propiedades del componente si es necesario
@@ -97,51 +98,53 @@ const Dashboard: React.FC<DashboardProps> = () => {
   return (
     <div className="containerDashboard">
       <Guard>
-        <Box display="flex" flexDirection="column" alignItems="center">
-          <Box flexGrow={1} width="100%">
-            <Grid
-              container
-              spacing={6}
-              justifyContent="center"
-              alignItems="center"
-              width="100%"
-            >
-              <Grid item xs={12} sm={6} md={3}>
-                <StatCard
-                  title="Clientes"
-                  icon={<People style={{ color: '#55C2E0' }} />}
-                  value={clientCount}
-                />
+        <Fade cascade>
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <Box flexGrow={1} width="100%">
+              <Grid
+                container
+                spacing={6}
+                justifyContent="center"
+                alignItems="center"
+                width="100%"
+              >
+                <Grid item xs={12} sm={6} md={3}>
+                  <StatCard
+                    title="Clientes"
+                    icon={<People style={{ color: '#55C2E0' }} />}
+                    value={clientCount}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <StatCard
+                    title="Ventas"
+                    icon={<ShoppingCart style={{ color: '#5DC616' }} />}
+                    value={saleCount}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <StatCard
+                    title="Productos"
+                    icon={<Store style={{ color: '#752DFD' }} />}
+                    value={productCount}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <StatCard
+                    title="Usuarios"
+                    icon={<ExitToApp style={{ color: '#FF2626' }} />}
+                    value={userCount}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <StatCard
-                  title="Ventas"
-                  icon={<ShoppingCart style={{ color: '#5DC616' }} />}
-                  value={saleCount}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <StatCard
-                  title="Productos"
-                  icon={<Store style={{ color: '#752DFD' }} />}
-                  value={productCount}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <StatCard
-                  title="Usuarios"
-                  icon={<ExitToApp style={{ color: '#FF2626' }} />}
-                  value={userCount}
-                />
-              </Grid>
-            </Grid>
-          </Box>
-          <div className="chartjsContainer">
-            <Box m={2}>
-              <canvas ref={chartRef}></canvas>
             </Box>
-          </div>
-        </Box>
+            <div className="chartjsContainer">
+              <Box m={2}>
+                <canvas ref={chartRef}></canvas>
+              </Box>
+            </div>
+          </Box>
+        </Fade>
       </Guard>
     </div>
   );

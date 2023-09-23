@@ -18,120 +18,102 @@ import {
   DialogActions,
 } from '@mui/material';
 
-interface Product {
+interface Client {
   name: string;
-  code: string;
-  stock: number;
-  price: number;
-  quantity: number;
-  total: number;
+  rtn: string;
+  address: string;
 }
 
-const ProductCrud: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [productName, setProductName] = useState<string>('');
-  const [productCode, setProductCode] = useState<string>('');
-  const [productStock, setProductStock] = useState<number>(0);
-  const [productPrice, setProductPrice] = useState<number>(0);
-  const [productQuantity, setProductQuantity] = useState<number>(0);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+const ClientCrud: React.FC = () => {
+  const [clients, setClients] = useState<Client[]>([]);
+  const [clientName, setClientName] = useState<string>('');
+  const [clientRtn, setClientRtn] = useState<string>('');
+  const [clientAddress, setClientAddress] = useState<string>('');
+  const [editingClient, setEditingClient] = useState<Client | null>(null);
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
-  const [productToDeleteIndex, setProductToDeleteIndex] = useState<
-    number | null
-  >(null);
+  const [clientToDeleteIndex, setClientToDeleteIndex] = useState<number | null>(
+    null
+  );
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   useEffect(() => {
-    const savedProducts = JSON.parse(localStorage.getItem('products') || '[]');
-    setProducts(savedProducts);
+    const savedClients = JSON.parse(localStorage.getItem('clients') || '[]');
+    setClients(savedClients);
   }, []);
 
-  const saveProductsToLocalStorage = (updatedProducts: Product[]) => {
-    localStorage.setItem('products', JSON.stringify(updatedProducts));
+  const saveClientsToLocalStorage = (updatedClients: Client[]) => {
+    localStorage.setItem('clients', JSON.stringify(updatedClients));
   };
 
-  const addProduct = () => {
-    if (
-      !productName ||
-      !productCode ||
-      productStock <= 0 ||
-      productPrice <= 0 ||
-      productQuantity <= 0
-    ) {
+  const addClient = () => {
+    if (!clientName || !clientRtn || !clientAddress) {
       alert('Por favor, complete todos los campos correctamente.');
       return;
     }
 
-    const newProduct: Product = {
-      name: productName,
-      code: productCode,
-      stock: productStock,
-      price: productPrice,
-      quantity: productQuantity,
-      total: productStock * productPrice,
+    const newClient: Client = {
+      name: clientName,
+      rtn: clientRtn,
+      address: clientAddress,
     };
 
-    if (editingProduct !== null) {
-      // Si estamos editando, actualizamos el producto existente
-      const updatedProducts = products.map((product) =>
-        product === editingProduct ? newProduct : product
+    if (editingClient) {
+      // Si estamos editando, actualizamos el cliente existente
+      const updatedClients = clients.map((client) =>
+        client === editingClient ? newClient : client
       );
-      setProducts(updatedProducts);
-      saveProductsToLocalStorage(updatedProducts);
-      setEditingProduct(null);
+      setClients(updatedClients);
+      saveClientsToLocalStorage(updatedClients);
+      setEditingClient(null);
     } else {
-      // Si no estamos editiendo, agregamos un nuevo producto
-      const updatedProducts = [...products, newProduct];
-      setProducts(updatedProducts);
-      saveProductsToLocalStorage(updatedProducts);
+      // Si no estamos editando, agregamos un nuevo cliente
+      const updatedClients = [...clients, newClient];
+      setClients(updatedClients);
+      saveClientsToLocalStorage(updatedClients);
     }
 
     // Limpiamos los campos del formulario
-    setProductName('');
-    setProductCode('');
-    setProductStock(0);
-    setProductPrice(0);
-    setProductQuantity(0);
+    setClientName('');
+    setClientRtn('');
+    setClientAddress('');
   };
 
   const confirmDelete = (index: number) => {
-    setProductToDeleteIndex(index);
+    setClientToDeleteIndex(index);
     setDeleteConfirmationOpen(true);
   };
 
-  const deleteProduct = () => {
-    if (productToDeleteIndex !== null) {
-      const updatedProducts: Product[] = products.filter(
-        (_, i) => i !== productToDeleteIndex
+  const deleteClient = () => {
+    if (clientToDeleteIndex !== null) {
+      const updatedClients: Client[] = clients.filter(
+        (_, i) => i !== clientToDeleteIndex
       );
-      setProducts(updatedProducts);
-      saveProductsToLocalStorage(updatedProducts);
+      setClients(updatedClients);
+      saveClientsToLocalStorage(updatedClients);
       setDeleteConfirmationOpen(false);
-      setProductToDeleteIndex(null);
+      setClientToDeleteIndex(null);
     }
   };
 
   const cancelDelete = () => {
     setDeleteConfirmationOpen(false);
-    setProductToDeleteIndex(null);
+    setClientToDeleteIndex(null);
   };
 
-  const editProduct = (index: number) => {
-    const productToEdit = products[index];
-    setProductName(productToEdit.name);
-    setProductCode(productToEdit.code);
-    setProductStock(productToEdit.stock);
-    setProductPrice(productToEdit.price);
-    setProductQuantity(productToEdit.quantity);
-    setEditingProduct(productToEdit);
+  const editClient = (index: number) => {
+    const clientToEdit = clients[index];
+    setClientName(clientToEdit.name);
+    setClientRtn(clientToEdit.rtn);
+    setClientAddress(clientToEdit.address);
+    setEditingClient(clientToEdit);
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredClients = clients.filter((client) =>
+    client.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -139,55 +121,38 @@ const ProductCrud: React.FC = () => {
       <Container>
         <div className="containerCRUDS">
           <Typography variant="h4" gutterBottom>
-            CRUD de Productos
+            CRUD de Clientes
           </Typography>
           <form>
             <TextField
               label="Nombre"
               fullWidth
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
+              value={clientName}
+              onChange={(e) => setClientName(e.target.value)}
               margin="normal"
             />
             <TextField
-              label="Código de Producto"
+              label="RTN"
               fullWidth
-              value={productCode}
-              onChange={(e) => setProductCode(e.target.value)}
+              value={clientRtn}
+              onChange={(e) => setClientRtn(e.target.value)}
               margin="normal"
             />
             <TextField
-              label="Existencias"
+              label="Dirección"
               fullWidth
-              type="number"
-              value={productStock}
-              onChange={(e) => setProductStock(Number(e.target.value))}
+              value={clientAddress}
+              onChange={(e) => setClientAddress(e.target.value)}
               margin="normal"
             />
-            <TextField
-              label="Precio"
-              fullWidth
-              type="number"
-              value={productPrice}
-              onChange={(e) => setProductPrice(Number(e.target.value))}
-              margin="normal"
-            />
-            <TextField
-              label="Cantidad"
-              fullWidth
-              type="number"
-              value={productQuantity}
-              onChange={(e) => setProductQuantity(Number(e.target.value))}
-              margin="normal"
-            />
-            <Button variant="contained" color="primary" onClick={addProduct}>
-              {editingProduct ? 'Guardar Cambios' : 'Agregar Producto'}
+            <Button variant="contained" color="primary" onClick={addClient}>
+              {editingClient ? 'Guardar Cambios' : 'Agregar Cliente'}
             </Button>
           </form>
         </div>
 
         <Typography variant="h5" gutterBottom>
-          Lista de Productos
+          Lista de Clientes
         </Typography>
         <Container
           component={Paper}
@@ -198,7 +163,7 @@ const ProductCrud: React.FC = () => {
           }}
         >
           <TextField
-            label="Buscar Producto"
+            label="Buscar Cliente"
             fullWidth
             value={searchTerm}
             onChange={handleSearchChange}
@@ -210,23 +175,17 @@ const ProductCrud: React.FC = () => {
             <TableHead>
               <TableRow>
                 <TableCell>Nombre</TableCell>
-                <TableCell>Código de Producto</TableCell>
-                <TableCell>Existencias</TableCell>
-                <TableCell>Precio</TableCell>
-                <TableCell>Cantidad</TableCell>
-                <TableCell>Total</TableCell>
+                <TableCell>RTN</TableCell>
+                <TableCell>Dirección</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredProducts.map((product, index) => (
+              {filteredClients.map((client, index) => (
                 <TableRow key={index}>
-                  <TableCell>{product.name}</TableCell>
-                  <TableCell>{product.code}</TableCell>
-                  <TableCell>{product.stock}</TableCell>
-                  <TableCell>{product.price}</TableCell>
-                  <TableCell>{product.quantity}</TableCell>
-                  <TableCell>{product.total}</TableCell>
+                  <TableCell>{client.name}</TableCell>
+                  <TableCell>{client.rtn}</TableCell>
+                  <TableCell>{client.address}</TableCell>
                   <TableCell>
                     <Button
                       variant="contained"
@@ -238,7 +197,7 @@ const ProductCrud: React.FC = () => {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => editProduct(index)}
+                      onClick={() => editClient(index)}
                       style={{ marginLeft: '8px' }}
                     >
                       Editar
@@ -260,7 +219,7 @@ const ProductCrud: React.FC = () => {
           <Button onClick={cancelDelete} color="primary">
             Cancelar
           </Button>
-          <Button onClick={deleteProduct} color="secondary">
+          <Button onClick={deleteClient} color="secondary">
             Eliminar
           </Button>
         </DialogActions>
@@ -269,4 +228,4 @@ const ProductCrud: React.FC = () => {
   );
 };
 
-export default ProductCrud;
+export default ClientCrud;
