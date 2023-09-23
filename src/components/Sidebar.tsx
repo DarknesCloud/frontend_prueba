@@ -15,7 +15,6 @@ import Box from '@mui/material/Box';
 import { Group, MonetizationOn, Store } from '@mui/icons-material';
 
 const Sidebar: React.FC = () => {
-  const [open, setOpen] = useState(true);
   const [userRole, setUserRole] = useState<number | null | string>(null); // Cambiado a number para representar el rol
 
   useEffect(() => {
@@ -109,7 +108,7 @@ const Sidebar: React.FC = () => {
       <Drawer
         variant="persistent"
         anchor="left"
-        open={open}
+        open={true}
         sx={{
           width: 240,
           flexShrink: 0,
