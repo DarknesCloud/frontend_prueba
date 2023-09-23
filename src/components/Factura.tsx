@@ -409,6 +409,8 @@ const Factura = () => {
                   fullWidth
                   variant="outlined"
                   style={{ marginTop: '20px' }}
+                  onChange={(e) => setSelectedProduct(e.target.value)}
+                  onBlur={(e) => handleProductSelect(e.target.value)}
                 />
               )}
             />
