@@ -71,16 +71,16 @@ const ProductCrud: React.FC = () => {
       total: productStock * productPrice,
     };
 
-    if (editingProduct) {
+    if (editingProduct !== null) {
       // Si estamos editando, actualizamos el producto existente
-      const updatedProducts = products.map((product, index) =>
-        index === productToDeleteIndex ? newProduct : product
+      const updatedProducts = products.map((product) =>
+        product === editingProduct ? newProduct : product
       );
       setProducts(updatedProducts);
       saveProductsToLocalStorage(updatedProducts);
       setEditingProduct(null);
     } else {
-      // Si no estamos editando, agregamos un nuevo producto
+      // Si no estamos editiendo, agregamos un nuevo producto
       const updatedProducts = [...products, newProduct];
       setProducts(updatedProducts);
       saveProductsToLocalStorage(updatedProducts);
@@ -93,7 +93,6 @@ const ProductCrud: React.FC = () => {
     setProductPrice(0);
     setProductQuantity(0);
   };
-
   const confirmDelete = (index: number) => {
     setProductToDeleteIndex(index);
     setDeleteConfirmationOpen(true);

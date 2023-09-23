@@ -56,19 +56,22 @@ const UserCrud: React.FC = () => {
       password: userPassword,
     };
 
-    if (editingUser) {
+    if (editingUser !== null) {
+      // Si estamos editando, actualizamos el usuario existente
       const updatedUsers = users.map((user, index) =>
-        index === userToDeleteIndex ? newUser : user
+        index === users.indexOf(editingUser) ? newUser : user
       );
       setUsers(updatedUsers);
       saveUsersToLocalStorage(updatedUsers);
       setEditingUser(null);
     } else {
+      // Si no estamos editiendo, agregamos un nuevo usuario
       const updatedUsers = [...users, newUser];
       setUsers(updatedUsers);
       saveUsersToLocalStorage(updatedUsers);
     }
 
+    // Limpiamos los campos del formulario
     setUserEmail('');
     setUserName('');
     setUserPassword('');
