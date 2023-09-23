@@ -10,7 +10,7 @@ interface Post {
   body: string;
 }
 
-const MyComponent: React.FC = () => {
+const Api: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -119,4 +119,4 @@ const MyComponent: React.FC = () => {
   );
 };
 
-export default MyComponent;
+export default Api;

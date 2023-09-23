@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import {
+  Api,
   ClientCrud,
   Dashboard,
   Factura,
@@ -27,7 +28,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/registerAdmin" element={<RegisterAdmin />} />
             <Route
-              path="/dashboard/*"
+              path="/*"
               element={
                 <div style={{ display: 'flex' }}>
                   <Sidebar />
@@ -46,13 +47,14 @@ function App() {
 function DashboardRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Dashboard />} />
+      <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/dashboard/users" element={<UserCrud />} />
       <Route path="/dashboard/products" element={<ProductCrud />} />
       <Route path="/dashboard/clients" element={<ClientCrud />} />
       <Route path="/dashboard/ventas" element={<VentasCrud />} />
       <Route path="/dashboard/invoice" element={<Factura />} />
       <Route path="/dashboard/tienda" element={<Store />} />
+      <Route path="/dashboard/api" element={<Api />} />
     </Routes>
   );
 }
