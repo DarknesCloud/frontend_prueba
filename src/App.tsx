@@ -10,6 +10,7 @@ import {
   Sidebar,
   TopBar,
   UserCrud,
+  VentasCrud,
 } from './pages';
 
 function App() {
@@ -48,6 +49,7 @@ function DashboardRoutes() {
       <Route path="/dashboard/users" element={<UserCrud />} />
       <Route path="/dashboard/products" element={<ProductCrud />} />
       <Route path="/dashboard/clients" element={<ClientCrud />} />
+      <Route path="/dashboard/ventas" element={<VentasCrud />} />
       <Route path="/dashboard/invoice" element={<Factura />} />
     </Routes>
   );

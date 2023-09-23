@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   AppBar,
   Toolbar,
   IconButton,
   Menu,
   MenuItem,
-  Button,
   ListItemIcon,
   ListItemText,
   Box,
@@ -17,7 +16,6 @@ import {
   Person,
   ExitToApp,
 } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
 
 const TopBar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
