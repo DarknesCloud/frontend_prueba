@@ -1,36 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { Container, Typography, TextField, Button, Paper } from '@mui/material';
 
 const RegisterAdmin: React.FC = () => {
+  const [adminPassword, setAdminPassword] = useState('');
+  const [viewMode, setViewMode] = useState(0);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
-  const [isFirstTime, setIsFirstTime] = useState(true);
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
-  const [enteredPassword, setEnteredPassword] = useState('');
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const storedAdminPassword = localStorage.getItem('adminPassword');
-    if (storedAdminPassword) {
-      setIsFirstTime(false);
+    if (!storedAdminPassword) {
+      // Si no existe una contraseña de administrador, establece el modo en 0 para la creación de contraseña.
+      setViewMode(0);
+    } else {
+      // Si existe una contraseña de administrador, establece el modo en 1 para la validación.
+      setViewMode(1);
     }
   }, []);
 
-  const handleAuthenticate = () => {
+  const handleAdminAuthentication = () => {
     const storedAdminPassword = localStorage.getItem('adminPassword');
-    if (enteredPassword !== storedAdminPassword) {
+    if (adminPassword !== storedAdminPassword) {
       alert('La contraseña de administrador ingresada es incorrecta.');
       return;
     }
+    setViewMode(2);
     setIsAdminAuthenticated(true);
   };
 
+  const handleCreateAdminPassword = () => {
+    if (!adminPassword) {
+      alert('Por favor, ingrese una contraseña de administrador.');
+      return;
+    }
+
+    // Guarda la contraseña de administrador en el localStorage.
+    localStorage.setItem('adminPassword', adminPassword);
+    // Cambia al modo de validación.
+    setViewMode(1);
+  };
+
   const handleRegister = () => {
-    if (!isFirstTime && !isAdminAuthenticated) {
+    if (viewMode !== 2 || !isAdminAuthenticated) {
       alert('Por favor, autentíquese para acceder al registro.');
       return;
     }
@@ -52,7 +66,8 @@ const RegisterAdmin: React.FC = () => {
     users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
     alert('Registro exitoso');
-    navigate('/dashboard');
+    // Navegar a la página de destino después del registro
+    // Ejemplo: navigate('/dashboard');
   };
 
   const generateRandomToken = () => {
@@ -81,35 +96,57 @@ const RegisterAdmin: React.FC = () => {
       >
         <Container maxWidth="sm">
           <Typography variant="h4" align="center">
-            {isFirstTime
+            {viewMode === 0
               ? 'Crear Contraseña de Administrador'
-              : isAdminAuthenticated
-              ? 'Registro'
-              : 'Autenticación'}
+              : viewMode === 1
+              ? 'Validar Contraseña de Administrador'
+              : 'Registro'}
           </Typography>
-          {!isFirstTime && !isAdminAuthenticated && (
+          {viewMode === 0 && (
             <>
               <TextField
                 label="Contraseña de Administrador"
                 variant="outlined"
                 type="password"
-                value={enteredPassword}
-                onChange={(e) => setEnteredPassword(e.target.value)}
+                value={adminPassword}
+                onChange={(e) => setAdminPassword(e.target.value)}
                 fullWidth
                 margin="normal"
               />
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleAuthenticate}
+                onClick={handleCreateAdminPassword}
                 fullWidth
                 style={{ marginTop: '20px' }}
               >
-                Autenticar
+                Crear Contraseña de Administrador
               </Button>
             </>
           )}
-          {(isFirstTime || isAdminAuthenticated) && (
+          {viewMode === 1 && (
+            <>
+              <TextField
+                label="Contraseña de Administrador"
+                variant="outlined"
+                type="password"
+                value={adminPassword}
+                onChange={(e) => setAdminPassword(e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAdminAuthentication}
+                fullWidth
+                style={{ marginTop: '20px' }}
+              >
+                Validar Contraseña de Administrador
+              </Button>
+            </>
+          )}
+          {viewMode === 2 && (
             <>
               <TextField
                 label="Nombre"
@@ -156,14 +193,6 @@ const RegisterAdmin: React.FC = () => {
               </Button>
             </>
           )}
-          <Link
-            to="/"
-            style={{ display: 'block', marginTop: '20px', textAlign: 'center' }}
-          >
-            <Button color="primary" fullWidth style={{ marginTop: '20px' }}>
-              Volver
-            </Button>
-          </Link>
         </Container>
       </Paper>
     </div>

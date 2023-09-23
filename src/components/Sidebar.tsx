@@ -10,18 +10,13 @@ import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import IconButton from '@mui/material/IconButton';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import MenuIcon from '@mui/icons-material/Menu';
+
 import Box from '@mui/material/Box';
+import { Group, MonetizationOn, Store } from '@mui/icons-material';
 
 const Sidebar: React.FC = () => {
   const [open, setOpen] = useState(true);
   const [userRole, setUserRole] = useState<number | null | string>(null); // Cambiado a number para representar el rol
-
-  const handleToggleSidebar = () => {
-    setOpen(!open);
-  };
 
   useEffect(() => {
     // Obtener el valor del rol del usuario desde el sessionStorage
@@ -40,6 +35,20 @@ const Sidebar: React.FC = () => {
       // Si el usuario tiene un rol de 1, muestra todos los elementos del menú
       return (
         <>
+          <ListItem
+            button
+            component={Link}
+            to="/dashboard"
+            style={{ marginTop: '10px', marginBottom: '10px' }}
+          >
+            <img
+              style={{ width: '100%' }}
+              src="https://itgrahn.com/images/logo.png"
+              alt="Logo"
+            />
+          </ListItem>
+          <Divider />
+
           <ListItem button component={Link} to="/dashboard">
             <ListItemIcon>
               <HomeIcon />
@@ -60,26 +69,25 @@ const Sidebar: React.FC = () => {
           </ListItem>
           <ListItem button component={Link} to="dashboard/users">
             <ListItemIcon>
-              <ShoppingCartIcon />
+              <Group />
             </ListItemIcon>
             <ListItemText primary="Usuarios" />
           </ListItem>
           <ListItem button component={Link} to="dashboard/ventas">
             <ListItemIcon>
-              <PersonIcon />
+              <MonetizationOn />
             </ListItemIcon>
             <ListItemText primary="Ventas" />
           </ListItem>
           <ListItem button component={Link} to="dashboard/tienda">
             <ListItemIcon>
-              <PersonIcon />
+              <Store />
             </ListItemIcon>
             <ListItemText primary="Tienda" />
           </ListItem>
         </>
       );
     } else if (userRole === '2' || userRole === 2) {
-      // Si el usuario tiene un rol de 2, oculta el elemento "Clientes"
       return (
         <>
           <ListItem button component={Link} to="/dashboard">
@@ -88,7 +96,6 @@ const Sidebar: React.FC = () => {
             </ListItemIcon>
             <ListItemText primary="Dashboard" />
           </ListItem>
-          {/* Los elementos "Clientes", "Productos" y "Usuarios" se ocultan */}
         </>
       );
     } else {
@@ -99,17 +106,6 @@ const Sidebar: React.FC = () => {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <IconButton
-        color="inherit"
-        aria-label="open drawer"
-        onClick={handleToggleSidebar}
-        edge="start"
-        sx={{
-          display: open ? 'none' : 'block',
-        }}
-      >
-        <MenuIcon />
-      </IconButton>
       <Drawer
         variant="persistent"
         anchor="left"
@@ -123,17 +119,6 @@ const Sidebar: React.FC = () => {
           },
         }}
       >
-        <IconButton
-          color="inherit"
-          aria-label="close drawer"
-          onClick={handleToggleSidebar}
-          edge="start"
-          sx={{
-            display: open ? 'block' : 'none',
-          }}
-        >
-          <ChevronLeftIcon />
-        </IconButton>
         <List>{renderMenuItems()}</List>
         <Divider />
         <List>

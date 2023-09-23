@@ -10,12 +10,7 @@ import {
   Box,
   Typography,
 } from '@mui/material';
-import {
-  AccountCircle,
-  Settings,
-  Person,
-  ExitToApp,
-} from '@mui/icons-material';
+import { AccountCircle, ExitToApp } from '@mui/icons-material';
 
 const TopBar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -73,18 +68,6 @@ const TopBar = () => {
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
-          <MenuItem onClick={handleMenuClose}>
-            <ListItemIcon>
-              <Person />
-            </ListItemIcon>
-            <ListItemText primary="Perfil" />
-          </MenuItem>
-          <MenuItem onClick={handleMenuClose}>
-            <ListItemIcon>
-              <Settings />
-            </ListItemIcon>
-            <ListItemText primary="Configuración" />
-          </MenuItem>
           <MenuItem onClick={handleLogout}>
             <ListItemIcon>
               <ExitToApp />

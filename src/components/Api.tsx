@@ -82,7 +82,7 @@ const Api: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{ margin: '50px', marginTop: '100px' }}>
       <Typography variant="h4" gutterBottom>
         Mis Posts
       </Typography>

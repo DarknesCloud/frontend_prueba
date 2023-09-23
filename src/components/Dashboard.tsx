@@ -109,28 +109,28 @@ const Dashboard: React.FC<DashboardProps> = () => {
               <Grid item xs={12} sm={6} md={3}>
                 <StatCard
                   title="Clientes"
-                  icon={<People />}
+                  icon={<People style={{ color: '#55C2E0' }} />}
                   value={clientCount}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
                 <StatCard
                   title="Ventas"
-                  icon={<ShoppingCart />}
+                  icon={<ShoppingCart style={{ color: '#5DC616' }} />}
                   value={saleCount}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
                 <StatCard
                   title="Productos"
-                  icon={<Store />}
+                  icon={<Store style={{ color: '#752DFD' }} />}
                   value={productCount}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
                 <StatCard
                   title="Usuarios"
-                  icon={<ExitToApp />}
+                  icon={<ExitToApp style={{ color: '#FF2626' }} />}
                   value={userCount}
                 />
               </Grid>
