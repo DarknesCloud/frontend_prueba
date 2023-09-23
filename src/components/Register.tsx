@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import {
-  Container,
-  Typography,
-  TextField,
-  Button,
-  Grid,
-  Paper,
-} from '@mui/material';
+import { Container, Typography, TextField, Button, Paper } from '@mui/material';
 
 const Register: React.FC = () => {
   const [name, setName] = useState('');

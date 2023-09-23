@@ -64,7 +64,6 @@ const Factura = () => {
   const [subtotal, setSubtotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [errorMensaje, setErrorMensaje] = useState<any>(null);
-  const [facturaGenerada, setFacturaGenerada] = useState(false);
 
   // Estado para controlar la cantidad y el mensaje de error
   const [errorCantidad, setErrorCantidad] = useState<string | null>(null);
@@ -99,73 +98,6 @@ const Factura = () => {
   }, []);
 
   // Evento para el botón de registrar cliente
-  const handleRegisterClientClick = () => {
-    // Validar que se haya seleccionado un cliente
-    if (!selectedClient) {
-      setErrorMensaje('Por favor, seleccione un cliente.');
-      return;
-    }
-
-    // Validar que se haya seleccionado un producto
-    if (!selectedProduct) {
-      setErrorMensaje('Por favor, seleccione un producto.');
-      return;
-    }
-
-    // Encontrar el producto seleccionado
-    const product = productList.find((p) => p.name === selectedProduct);
-
-    // Validar que la cantidad y el precio sean mayores que cero
-    if (cantidad <= 0 || precio <= 0) {
-      setErrorMensaje(
-        'Asegúrese de que la cantidad y el precio sean mayores que cero.'
-      );
-      return;
-    }
-
-    // Validar que la cantidad no sea mayor que el stock disponible
-    if (product) {
-      const updatedStock = product.stock - cantidad;
-      const updatedProducts = productList.map((p) =>
-        p.code === product.code ? { ...p, stock: updatedStock } : p
-      );
-      setProductList(updatedProducts);
-      localStorage.setItem('products', JSON.stringify(updatedProducts));
-    } else {
-      setErrorMensaje('Producto no encontrado en el catálogo.');
-      return;
-    }
-
-    // Crear un objeto Sale con los datos del formulario
-    const subtotalVenta = precio * cantidad;
-    const isv = subtotalVenta * 0.15;
-    const totalVenta = subtotalVenta + isv;
-
-    const venta: Sale = {
-      name: selectedClient,
-      tipoFactura,
-      codigoProducto: product.code,
-      precio,
-      cantidad,
-      subtotal: subtotalVenta,
-      total: totalVenta,
-      productName: product.name,
-    };
-
-    // Agregar la nueva venta a la lista de ventas
-    setSales([...sales, venta]);
-
-    // Limpiar el formulario
-    setSelectedClient('');
-    setTipoFactura('');
-    setSelectedProduct('');
-    setCodigoProducto('');
-    setPrecio(0);
-    setCantidad(0);
-    setSubtotal(0);
-    setTotal(0);
-    setErrorMensaje(null);
-  };
 
   // Evento para calcular el subtotal, ISV y total
   useEffect(() => {
@@ -229,7 +161,7 @@ const Factura = () => {
       setErrorMensaje(
         'Por favor, seleccione un cliente y registre al menos un producto.'
       );
-      return;
+      return errorMensaje;
     }
 
     // Validar que haya suficientes existencias para los productos vendidos
@@ -328,8 +260,6 @@ const Factura = () => {
     // Actualizar el contador de facturas
     setInvoiceCounter((prevCounter) => prevCounter + 1);
 
-    setFacturaGenerada(true);
-
     // Limpiar el formulario y errores
     setSelectedClient('');
     setTipoFactura('');
@@ -404,6 +334,7 @@ const Factura = () => {
                 onChange={(_, newValue: any) => setSelectedProduct(newValue)}
                 onInputChange={(e, newInputValue) => {
                   setSelectedProduct(newInputValue);
+                  e;
                 }}
                 renderInput={(params) => (
                   <TextField
@@ -474,19 +405,11 @@ const Factura = () => {
                 }}
                 style={{ marginTop: '20px' }}
               />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleRegisterClientClick}
-                style={{ marginTop: '20px' }}
-              >
-                Registrar Cliente
-              </Button>
+
               <Button
                 variant="contained"
                 color="success"
                 onClick={handlePagarFacturaClick}
-                disabled={facturaGenerada}
                 style={{ marginTop: '20px', marginLeft: '10px' }}
               >
                 Generar Factura

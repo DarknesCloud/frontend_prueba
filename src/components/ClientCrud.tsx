@@ -118,7 +118,7 @@ const ClientCrud: React.FC = () => {
 
   return (
     <Guard>
-      <Container>
+      <Container style={{ marginBottom: '100px' }}>
         <div className="containerCRUDS">
           <Typography variant="h4" gutterBottom>
             CRUD de Clientes

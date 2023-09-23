@@ -38,7 +38,7 @@ const ProductCard: React.FC = () => {
         setLoading(false);
       })
       .catch((err) => {
-        setError('Error al cargar los productos');
+        setError('Error al cargar los productos: '), err;
         setLoading(false);
       });
   }, []);
