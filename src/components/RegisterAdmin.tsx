@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, TextField, Button, Paper } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterAdmin: React.FC = () => {
   const [adminPassword, setAdminPassword] = useState('');
@@ -9,6 +10,8 @@ const RegisterAdmin: React.FC = () => {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedAdminPassword = localStorage.getItem('adminPassword');
@@ -67,7 +70,7 @@ const RegisterAdmin: React.FC = () => {
     localStorage.setItem('users', JSON.stringify(users));
     alert('Registro exitoso');
     // Navegar a la página de destino después del registro
-    // Ejemplo: navigate('/dashboard');
+    navigate('/');
   };
 
   const generateRandomToken = () => {

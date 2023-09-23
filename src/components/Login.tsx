@@ -119,8 +119,8 @@ const Login: React.FC = () => {
           </Button>
           <Grid container>
             <Grid item xs>
-              <MuiLink href="#" variant="body2">
-                ¿Olvido su contraseña?
+              <MuiLink component={Link} to="/registerAdmin" variant="body2">
+                {'Registro de administrador'}
               </MuiLink>
             </Grid>
             <Grid item>
