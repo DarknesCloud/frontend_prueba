@@ -33,3 +33,8 @@ body {
   margin-bottom: 25px;
   box-shadow: 1px 1px 3px 3px #e4e2e2;
 }
+
+.cardsContainer:hover {
+  transform: scale(1.05);
+  transition: 0.7s;
+}

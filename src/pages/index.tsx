@@ -10,3 +10,4 @@ export { default as Factura } from '../components/Factura';
 export { default as Dashboard } from '../components/Dashboard';
 export { default as Sidebar } from '../components/Sidebar';
 export { default as TopBar } from '../components/TopBar';
+export { default as Store } from '../components/Store';

@@ -70,6 +70,12 @@ const Sidebar: React.FC = () => {
             </ListItemIcon>
             <ListItemText primary="Ventas" />
           </ListItem>
+          <ListItem button component={Link} to="dashboard/tienda">
+            <ListItemIcon>
+              <PersonIcon />
+            </ListItemIcon>
+            <ListItemText primary="Tienda" />
+          </ListItem>
         </>
       );
     } else if (userRole === '2' || userRole === 2) {

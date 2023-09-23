@@ -8,6 +8,7 @@ import {
   Register,
   RegisterAdmin,
   Sidebar,
+  Store,
   TopBar,
   UserCrud,
   VentasCrud,
@@ -51,6 +52,7 @@ function DashboardRoutes() {
       <Route path="/dashboard/clients" element={<ClientCrud />} />
       <Route path="/dashboard/ventas" element={<VentasCrud />} />
       <Route path="/dashboard/invoice" element={<Factura />} />
+      <Route path="/dashboard/tienda" element={<Store />} />
     </Routes>
   );
 }
