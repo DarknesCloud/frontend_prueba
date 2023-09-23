@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Chart, { ChartConfiguration } from 'chart.js/auto';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { ExitToApp, People, ShoppingCart, Store } from '@mui/icons-material';
 import Guard from './Guard';
 import StatCard from './StatCard';
@@ -138,6 +138,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 </Grid>
               </Grid>
             </Box>
+            <Typography variant="h4" gutterBottom style={{ marginTop: '35px' }}>
+              Tipos de Facturas
+            </Typography>
             <div className="chartjsContainer">
               <Box m={2}>
                 <canvas ref={chartRef}></canvas>

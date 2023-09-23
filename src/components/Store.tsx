@@ -45,7 +45,11 @@ const ProductCard: React.FC = () => {
 
   return (
     <Fade>
-      <Grid container spacing={2} style={{ margin: '50px', marginTop: '80px' }}>
+      <Grid
+        container
+        spacing={2}
+        style={{ padding: '15px', marginTop: '100px' }}
+      >
         {loading ? (
           <Typography variant="h6">Cargando...</Typography>
         ) : error ? (

@@ -20,6 +20,7 @@ import {
 interface User {
   email: string;
   name: string;
+  role: string;
   password: string;
 }
 
@@ -28,6 +29,7 @@ const UserCrud: React.FC = () => {
   const [userEmail, setUserEmail] = useState<string>('');
   const [userName, setUserName] = useState<string>('');
   const [userPassword, setUserPassword] = useState<string>('');
+  const [userRole, setUserRole] = useState<string>('');
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDeleteIndex, setUserToDeleteIndex] = useState<number | null>(
@@ -53,6 +55,7 @@ const UserCrud: React.FC = () => {
     const newUser: User = {
       email: userEmail,
       name: userName,
+      role: userRole,
       password: userPassword,
     };
 
@@ -74,6 +77,7 @@ const UserCrud: React.FC = () => {
     // Limpiamos los campos del formulario
     setUserEmail('');
     setUserName('');
+    setUserRole('');
     setUserPassword('');
   };
 
@@ -103,6 +107,7 @@ const UserCrud: React.FC = () => {
     const userToEdit = users[index];
     setUserEmail(userToEdit.email);
     setUserName(userToEdit.name);
+    setUserRole(userToEdit.role);
     setUserPassword(userToEdit.password);
     setEditingUser(userToEdit);
   };
@@ -134,6 +139,13 @@ const UserCrud: React.FC = () => {
             fullWidth
             value={userName}
             onChange={(e: any) => setUserName(e.target.value)}
+            margin="normal"
+          />
+          <TextField
+            label="Role"
+            fullWidth
+            value={userRole}
+            onChange={(e: any) => setUserRole(e.target.value)}
             margin="normal"
           />
           <TextField
@@ -174,6 +186,7 @@ const UserCrud: React.FC = () => {
             <TableRow>
               <TableCell>Email</TableCell>
               <TableCell>Nombre</TableCell>
+              <TableCell>Role</TableCell>
               <TableCell>Contraseña</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
@@ -183,6 +196,7 @@ const UserCrud: React.FC = () => {
               <TableRow key={index}>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.name}</TableCell>
+                <TableCell>{user.role}</TableCell>
                 <TableCell>{user.password}</TableCell>
                 <TableCell>
                   <Button
