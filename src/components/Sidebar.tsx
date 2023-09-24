@@ -12,7 +12,12 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import BarChartIcon from '@mui/icons-material/BarChart';
 
 import Box from '@mui/material/Box';
-import { Group, MonetizationOn, Store } from '@mui/icons-material';
+import {
+  AssignmentLate,
+  Group,
+  MonetizationOn,
+  Store,
+} from '@mui/icons-material';
 
 const Sidebar: React.FC = () => {
   const [userRole, setUserRole] = useState<number | null | string>(null); // Cambiado a number para representar el rol
@@ -83,6 +88,12 @@ const Sidebar: React.FC = () => {
               <Store />
             </ListItemIcon>
             <ListItemText primary="Tienda" />
+          </ListItem>
+          <ListItem button component={Link} to="dashboard/api">
+            <ListItemIcon>
+              <AssignmentLate />
+            </ListItemIcon>
+            <ListItemText primary="Prueba de api" />
           </ListItem>
         </>
       );

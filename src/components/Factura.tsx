@@ -152,8 +152,6 @@ const Factura = () => {
     }
   };
 
-  // ...
-
   // Evento para el botón de "Pagar Factura" con los nuevos requerimientos
   const handlePagarFacturaClick = () => {
     // Validar que se haya seleccionado un cliente y se haya registrado al menos un producto
@@ -271,8 +269,6 @@ const Factura = () => {
     setTotal(0);
     setErrorMensaje(null);
   };
-
-  // ...
 
   return (
     <Guard>
