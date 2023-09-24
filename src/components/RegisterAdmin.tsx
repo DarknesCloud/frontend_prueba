@@ -65,7 +65,8 @@ const RegisterAdmin: React.FC = () => {
     }
 
     const token = generateRandomToken();
-    const newUser = { name, email, password, token, role };
+    const roleNumber = parseInt(role);
+    const newUser = { name, email, password, token, roleNumber };
     users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
     alert('Registro exitoso');

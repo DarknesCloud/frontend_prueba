@@ -22,7 +22,7 @@ const Sidebar: React.FC = () => {
     const userSession = sessionStorage.getItem('userSession');
     if (userSession) {
       const userData = JSON.parse(userSession);
-      const role = userData.role;
+      const role = userData.roleNumber;
       setUserRole(role);
       console.log('Rol del usuario:', role); // Imprimir el rol en la consola
     }
@@ -89,11 +89,42 @@ const Sidebar: React.FC = () => {
     } else if (userRole === '2' || userRole === 2) {
       return (
         <>
+          <ListItem
+            button
+            component={Link}
+            to="/dashboard"
+            style={{ marginTop: '10px', marginBottom: '10px' }}
+          >
+            <img
+              style={{ width: '100%' }}
+              src="https://itgrahn.com/images/logo.png"
+              alt="Logo"
+            />
+          </ListItem>
+          <Divider />
           <ListItem button component={Link} to="/dashboard">
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
             <ListItemText primary="Dashboard" />
+          </ListItem>
+          <ListItem button component={Link} to="dashboard/tienda">
+            <ListItemIcon>
+              <Store />
+            </ListItemIcon>
+            <ListItemText primary="Tienda" />
+          </ListItem>
+          <ListItem button component={Link} to="dashboard/ventas">
+            <ListItemIcon>
+              <MonetizationOn />
+            </ListItemIcon>
+            <ListItemText primary="Ventas" />
+          </ListItem>
+          <ListItem button component={Link} to="dashboard/clients">
+            <ListItemIcon>
+              <PersonIcon />
+            </ListItemIcon>
+            <ListItemText primary="Clientes" />
           </ListItem>
         </>
       );
